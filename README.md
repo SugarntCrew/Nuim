@@ -1,4 +1,4 @@
-# Launcher Prototype
+# NUIM
 
 Front-end destinated to launch games of all type.
 
