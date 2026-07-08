@@ -1,6 +1,6 @@
 package menus;
 
-class MainState extends FlxState
+class MainState extends State
 {
     var colorBG:FlxSprite;
     var header:Header;
