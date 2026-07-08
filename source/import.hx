@@ -1,6 +1,9 @@
 package source;
 
-import ui.Header;
+import ui.header.Header;
+import ui.header.UserAccountUI;
+
+import ui.contracts.IClickable;
 
 import menus.MainState;
 
