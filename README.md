@@ -2,7 +2,7 @@
 
 Front-end destinated to launch games of all type.
 
-> Note
+> [!NOTE]
 > This does not include any game. It's just an application to launch.
 
 ## Aim of this project
