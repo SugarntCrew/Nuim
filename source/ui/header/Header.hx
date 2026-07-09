@@ -15,6 +15,10 @@ class Header extends FlxSpriteGroup
         userAccountUI = new UserAccountUI(0, 0, height, height); // double height because we want a square with the same proportions as the bg height
         userAccountUI.x = FlxG.width - userAccountUI.width;
         userAccountUI.y = headerBackground.height / 2 - userAccountUI.height / 2;
+        userAccountUI.onClickCallback = function()
+        {
+            trace('Clicked account icon');
+        }
         add(userAccountUI);
     }
 }
