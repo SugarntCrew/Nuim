@@ -19,11 +19,26 @@ class UserAccountUI extends FlxSprite implements IClickable
 
         if(FlxG.mouse.overlaps(this))
         {
+            hover(true);
             if(FlxG.mouse.justPressed)
             {
                 onClick();
             }
         }
+        else
+        {
+            hover(true);
+        }
+    }
+    
+    public function onHover()
+    {
+
+    }
+
+    public function hover(hover:Bool)
+    {
+
     }
     
     public function onClick()

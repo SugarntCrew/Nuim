@@ -1,6 +1,8 @@
 package source;
 
 import backend.State;
+import backend.Paths;
+import backend.GameGrid;
 
 import ui.header.Header;
 import ui.header.UserAccountUI;
