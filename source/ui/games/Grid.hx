@@ -48,7 +48,7 @@ class Grid extends FlxSpriteGroup implements IClickable
             gridText.x += 10;
             gridText.y += gridImage.height / 2 - gridText.height / 2;
             gridText.text = gridName;
-            gridText.setFormat(Paths.font('vcr'), 40, 0xFFFFFFFF, CENTER);
+            gridText.setFormat(Paths.font('advent_pro'), 40, 0xFFDBDBDB, CENTER);
         }
 
         gridImageBlur.loadGraphic(Paths.image('games/grids/blur'));

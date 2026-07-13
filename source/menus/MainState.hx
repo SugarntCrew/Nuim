@@ -1,7 +1,5 @@
 package menus;
 
-import ui.games.Grid;
-
 class MainState extends State
 {
     // private (backend) vars
@@ -11,6 +9,7 @@ class MainState extends State
     var colorBG:FlxSprite;
     var board:FlxSprite;
     var header:Header;
+    var footer:Footer;
 
     var bgTransition:FlxSprite;
 
@@ -66,6 +65,10 @@ class MainState extends State
 
         header = new Header(FlxG.width, 70);
         add(header);
+
+        footer = new Footer(FlxG.width, 70);
+        footer.y = FlxG.height - footer.height;
+        add(footer);
 
         bgTransition = new FlxSprite();
         bgTransition.makeGraphic(FlxG.width, FlxG.height, 0xFF000000);

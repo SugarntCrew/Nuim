@@ -14,9 +14,10 @@ class Main extends Sprite
 	{
 		super();
         
+        // FlxG.mouse.useSystemCursor = true;
+        FlxSprite.defaultAntialiasing = true;
+
         var game = new FlxGame(game.width, game.height, game.initialState, game.fps, game.fps, game.skipSplash);
 		addChild(game);
-
-        FlxG.mouse.useSystemCursor = true;
 	}
 }

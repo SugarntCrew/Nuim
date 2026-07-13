@@ -6,6 +6,8 @@ import backend.GameGrid;
 
 import ui.header.Header;
 import ui.header.UserAccountUI;
+import ui.footer.Footer;
+import ui.games.Grid;
 
 import ui.contracts.IClickable;
 
@@ -15,6 +17,7 @@ import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.text.FlxText;
 import flixel.group.FlxSpriteGroup;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
