@@ -53,6 +53,8 @@ class Grid extends FlxSpriteGroup implements IClickable
         add(gridText);
     }
 
+    private var _onHover:Bool = false;
+    private var _onUnhover:Bool = false;
     public var targetScale:Float = 1;
     public var scaleSpeed:Float = 10;
     override function update(elapsed:Float)
@@ -64,6 +66,13 @@ class Grid extends FlxSpriteGroup implements IClickable
 
         if(FlxG.mouse.overlaps(gridImage))
         {
+            _onUnhover = true;
+            if(_onHover) 
+            {
+                onHover();
+                _onHover = false;
+            }
+
             hover(true);
             if(FlxG.mouse.justPressed)
             {
@@ -72,6 +81,12 @@ class Grid extends FlxSpriteGroup implements IClickable
         }
         else
         {
+            _onHover = true;
+            if(_onUnhover) 
+            {
+                onUnhover();
+                _onUnhover = false;
+            }
             hover(false);
         }
     }
@@ -85,6 +100,11 @@ class Grid extends FlxSpriteGroup implements IClickable
     public function hover(hover:Bool)
     {
         targetScale = hover ? 1.05 : 1;
+    }
+
+    public function onUnhover()
+    {
+
     }
     
     public function onClick(?customBehavior:Dynamic)

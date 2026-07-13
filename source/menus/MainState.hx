@@ -14,7 +14,7 @@ class MainState extends State
         super.create();
 
         colorBG = new FlxSprite();
-        colorBG.makeGraphic(FlxG.width, FlxG.height, 0xFFFFFFFF);
+        colorBG.makeGraphic(FlxG.width, FlxG.height, 0xFFC9C9C9);
         add(colorBG);
 
         var numX:Int = 0;
