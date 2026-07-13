@@ -4,6 +4,10 @@ import ui.games.Grid;
 
 class MainState extends State
 {
+    // private (backend) vars
+    var hasExited:Bool = false;
+
+    // visual vars
     var colorBG:FlxSprite;
     var header:Header;
 
@@ -36,6 +40,9 @@ class MainState extends State
 
             grid.onClickCallback = function(data, ?behavior)
             {
+                if(hasExited) return;
+                hasExited = true;
+                
                 FlxTween.tween(FlxG.camera, {zoom: 1.3}, 0.65, {ease: FlxEase.quartIn});
                 FlxTween.tween(bgTransition, {alpha: 1}, 0.65, {ease: FlxEase.quartIn, onComplete: function(twn:FlxTween)
                 {
