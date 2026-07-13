@@ -12,6 +12,7 @@ class Grid extends FlxSpriteGroup implements IClickable
     public var gridName:String;
     public var gridImageName:String;
 
+    public var gridImageBlur:FlxSprite;
     public var gridImage:FlxSprite;
     public var gridText:FlxText;
 
@@ -25,6 +26,7 @@ class Grid extends FlxSpriteGroup implements IClickable
         gridName = _data.name ?? '';
         gridImageName = _data.grid_image ?? 'FJASKLGJASKLGJASLKGJASKLGJASLKGJASKLGJASKLGJASGJASKGJALSKG'; //idk whatever
 
+        gridImageBlur = new FlxSprite();
         gridImage = new FlxSprite();
         gridText = new FlxText(0, 0, 0, '');
         if(FileSystem.exists(Paths.image('games/grids/$gridImageName')))
@@ -49,6 +51,10 @@ class Grid extends FlxSpriteGroup implements IClickable
             gridText.setFormat(Paths.font('vcr'), 40, 0xFFFFFFFF, CENTER);
         }
 
+        gridImageBlur.loadGraphic(Paths.image('games/grids/blur'));
+        gridImageBlur.x += (gridImage.width / 2) - (gridImageBlur.width / 2);
+
+        add(gridImageBlur);
         add(gridImage);
         add(gridText);
     }

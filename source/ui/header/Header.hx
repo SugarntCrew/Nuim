@@ -9,7 +9,8 @@ class Header extends FlxSpriteGroup
         super();
 
         headerBackground = new FlxSprite();
-        headerBackground.makeGraphic(width, height, 0xFF646464);
+        //headerBackground.makeGraphic(width, height, 0xFF646464);
+        headerBackground.loadGraphic(Paths.image('ui/header/bg'));
         add(headerBackground);
 
         userAccountUI = new UserAccountUI(0, 0, height, height); // double height because we want a square with the same proportions as the bg height

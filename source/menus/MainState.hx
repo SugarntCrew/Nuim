@@ -9,6 +9,7 @@ class MainState extends State
 
     // visual vars
     var colorBG:FlxSprite;
+    var board:FlxSprite;
     var header:Header;
 
     var bgTransition:FlxSprite;
@@ -21,22 +22,29 @@ class MainState extends State
         colorBG.makeGraphic(FlxG.width, FlxG.height, 0xFFC9C9C9);
         add(colorBG);
 
+        board = new FlxSprite();
+        board.loadGraphic(Paths.image('ui/board'));
+        board.screenCenter(X);
+        board.y = FlxG.height - board.height;
+        add(board);
+
+        var columns:Int = 5;
         var numX:Int = 0;
-        var numY:Int = 0;
+        var numY:Int = -1;
         for(i in 0...GameGrid.games.length)
         {
             var grid = new Grid(0, 0, GameGrid.games[i]);
-            grid.x = 40 + (numX * (grid.gridPixelSize + 40));
+            grid.x = board.x + 40 + (numX * (grid.gridPixelSize + 40));
 
-            if(grid.x + grid.width > FlxG.width) 
+            if(i % columns == 0) 
             {
                 trace('${grid.x + grid.width} is > than ${FlxG.width}');
                 numX = 0;
                 numY++;
             }
 
-            grid.y = 70 + 60 + (numY * 480);
-            grid.x = 40 + (numX * (grid.gridPixelSize + 40));
+            grid.y = board.y + 40 + (numY * 480);
+            grid.x = board.x + 35 + (numX * (grid.gridPixelSize + 35));
 
             grid.onClickCallback = function(data, ?behavior)
             {
