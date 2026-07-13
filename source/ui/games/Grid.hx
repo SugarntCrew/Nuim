@@ -94,7 +94,7 @@ class Grid extends FlxSpriteGroup implements IClickable
 
     public function onHover()
     {
-
+        Mouse.cursor = BUTTON;
     }
 
     public function hover(hover:Bool)
@@ -104,7 +104,7 @@ class Grid extends FlxSpriteGroup implements IClickable
 
     public function onUnhover()
     {
-
+        Mouse.cursor = ARROW;
     }
     
     public function onClick(?customBehavior:Dynamic)

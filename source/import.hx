@@ -20,5 +20,6 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 
 import openfl.display.Sprite;
+import openfl.ui.Mouse;
 
 using StringTools;
