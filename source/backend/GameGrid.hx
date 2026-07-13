@@ -3,6 +3,8 @@ package backend;
 typedef GameData = 
 {
     var name:String;
+    
+    @:optional var grid_image:String;
 }
 
 class GameGrid
@@ -21,7 +23,8 @@ class GameGrid
             name: "Fortnite"
         },
         {
-            name: "Y-Sides"
+            name: "Y-Sides",
+            grid_image: 'ysides'
         },
         {
             name: "+2 Billetes"

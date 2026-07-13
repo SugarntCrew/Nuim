@@ -16,6 +16,8 @@ import flixel.FlxGame;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxSpriteGroup;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 
 import openfl.display.Sprite;
 

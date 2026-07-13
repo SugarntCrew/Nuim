@@ -41,7 +41,7 @@ class UserAccountUI extends FlxSprite implements IClickable
 
     }
     
-    public function onClick()
+    public function onClick(?customBehavior:Dynamic)
     {
         if(onClickCallback != null) onClickCallback();
     }
