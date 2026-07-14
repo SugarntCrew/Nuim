@@ -96,7 +96,7 @@ class MainState extends State
                     trace('Opening substate!');
 
                     // TODO: Open substate with more info n metadata n cool stuff
-                    openSubState(new GameInfoState());
+                    openSubState(new GameInfoState(data));
                 }});
             }
 
