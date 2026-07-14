@@ -146,6 +146,7 @@ class MainState extends State
         bgTransition = new FlxSprite();
         bgTransition.makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
         bgTransition.alpha = 0;
+        bgTransition.scrollFactor.set(0, 0);
         add(bgTransition);
     }
 
