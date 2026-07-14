@@ -24,7 +24,7 @@ class GameGrid
             name: "Fortnite"
         },
         {
-            name: "Y-Sides",
+            name: "Friday Night Funkin': Y-Sides",
             grid_image: 'ysides',
             heroe_image: 'ysides'
         },

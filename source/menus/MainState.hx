@@ -22,6 +22,7 @@ class MainState extends State
 
     var mainCam:FlxCamera;
     var hudCam:FlxCamera;
+    var gameInfoCam:FlxCamera;
 
     override function create()
     {
@@ -36,8 +37,13 @@ class MainState extends State
         hudCam.bgColor.alpha = 0;
         add(hudCam);
 
+        gameInfoCam = new FlxCamera();
+        gameInfoCam.bgColor.alpha = 0;
+        add(gameInfoCam);
+
         FlxG.cameras.reset(mainCam);
         FlxG.cameras.add(hudCam, false);
+        FlxG.cameras.add(gameInfoCam, false);
 
         colorBG = new FlxSprite();
         colorBG.makeGraphic(FlxG.width, FlxG.height, 0xFFC9C9C9);
@@ -90,13 +96,14 @@ class MainState extends State
 
                 FlxG.sound.play(Paths.sound('acceptSfx'));
                 
+                FlxTween.tween(footer, {y: FlxG.height}, 0.65, {ease: FlxEase.quartIn});
                 FlxTween.tween(FlxG.camera, {zoom: 1.3}, 0.65, {ease: FlxEase.quartIn});
                 FlxTween.tween(bgTransition, {alpha: 1}, 0.65, {ease: FlxEase.quartIn, onComplete: function(twn:FlxTween)
                 {
                     trace('Opening substate!');
 
                     // TODO: Open substate with more info n metadata n cool stuff
-                    openSubState(new GameInfoState(data));
+                    openSubState(new GameInfoState(data, gameInfoCam));
                 }});
             }
 
@@ -104,6 +111,7 @@ class MainState extends State
             {
                 timer = 0;
                 heroe.alreadyRegen = false;
+                if(!hasExited) FlxG.sound.play(Paths.sound('changeSfx'));
             }
 
             grid.hoverCallback = function(data)
@@ -182,6 +190,7 @@ class MainState extends State
 
         hasExited = false;
 
+        FlxTween.tween(footer, {y: FlxG.height - footer.height}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(FlxG.camera, {zoom: 1}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(bgTransition, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
     }

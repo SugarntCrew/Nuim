@@ -20,7 +20,7 @@ class OptionsButton extends FlxSprite implements IClickable
         var mult = FlxMath.lerp(scale.x, targetScale, elapsed * scaleSpeed);
         scale.set(mult, mult);
 
-        if(FlxG.mouse.overlaps(this))
+        if(FlxG.mouse.overlaps(this, FlxG.cameras.list[FlxG.cameras.list.length - 1]))
         {
             _onUnhover = true;
             if(_onHover) 
