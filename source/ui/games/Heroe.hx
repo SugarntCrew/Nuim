@@ -17,6 +17,7 @@ class Heroe extends FlxSprite
 
         regenImage(path, true);
         color = 0xFF929292;
+        scrollFactor.set(0, 0);
 
         blurShader = new BlurShader();
         blurShader.lod.value = [0];

@@ -22,6 +22,7 @@ import flixel.group.FlxSpriteGroup;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.math.FlxMath;
+import flixel.FlxCamera;
 
 import openfl.display.Sprite;
 import openfl.ui.Mouse;
