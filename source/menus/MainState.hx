@@ -134,7 +134,7 @@ class MainState extends State
         boardBackground.alpha = 0.45;
         boardBackground.y = board.y + board.height;
 
-        header = new Header(FlxG.width, 70);
+        header = new Header();
         header.cameras = [hudCam];
         add(header);
 

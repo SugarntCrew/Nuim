@@ -1,5 +1,7 @@
 package ui.header;
 
+import backend.DateUtils;
+
 class Header extends FlxSpriteGroup
 {
     public var optionsBackground:FlxSprite;
@@ -7,7 +9,8 @@ class Header extends FlxSpriteGroup
 
     public var headerBackground:FlxSprite;
     public var userAccountUI:UserAccountUI;
-    public function new(width:Int, height:Int)
+    public var dateTimeTxt:DateText;
+    public function new()
     {
         super();
 
@@ -25,13 +28,20 @@ class Header extends FlxSpriteGroup
         headerBackground.loadGraphic(Paths.image('ui/header/bg'));
         add(headerBackground);
 
-        userAccountUI = new UserAccountUI(0, 0, height, height); // double height because we want a square with the same proportions as the bg height
+        userAccountUI = new UserAccountUI(0, 0, 100, 100); // double height because we want a square with the same proportions as the bg height
         userAccountUI.x = FlxG.width - userAccountUI.width;
-        userAccountUI.y = headerBackground.height / 2 - userAccountUI.height / 2;
+        userAccountUI.y = 123 / 2 - userAccountUI.height / 2;
         userAccountUI.onClickCallback = function()
         {
             trace('Clicked account icon');
         }
         add(userAccountUI);
+
+        dateTimeTxt = new DateText();
+        dateTimeTxt.text = DateUtils.formatTime(DateUtils.getCurrentTime());
+        dateTimeTxt.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        dateTimeTxt.x = 1490;
+        dateTimeTxt.y = 123 / 2 - dateTimeTxt.height / 2;
+        add(dateTimeTxt);
     }
 }

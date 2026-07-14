@@ -55,7 +55,7 @@ class GameInfoState extends Substate
         titleText.y = line.y - titleText.height - 5;
         add(titleText);
         
-        header = new Header(FlxG.width, 70);
+        header = new Header();
         header.scrollFactor.set(0, 0);
         add(header);
 
