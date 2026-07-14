@@ -27,6 +27,8 @@ class MainState extends State
     {
         super.create();
 
+        FlxG.sound.playMusic(Paths.music('roamingMusic'));
+
         mainCam = new FlxCamera();
         add(mainCam);
 
@@ -85,12 +87,16 @@ class MainState extends State
             {
                 if(hasExited) return;
                 hasExited = true;
+
+                FlxG.sound.play(Paths.sound('acceptSfx'));
                 
                 FlxTween.tween(FlxG.camera, {zoom: 1.3}, 0.65, {ease: FlxEase.quartIn});
                 FlxTween.tween(bgTransition, {alpha: 1}, 0.65, {ease: FlxEase.quartIn, onComplete: function(twn:FlxTween)
                 {
+                    trace('Opening substate!');
+
                     // TODO: Open substate with more info n metadata n cool stuff
-                    FlxG.switchState(MainState.new);
+                    openSubState(new GameInfoState());
                 }});
             }
 
@@ -138,7 +144,7 @@ class MainState extends State
     var timer:Float = 0;
     var targetScrollY:Float = 0;
     var offsetY:Float = -160;
-    var scrollIntensity:Float = 20;
+    var scrollIntensity:Float = 40;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -167,5 +173,16 @@ class MainState extends State
                 }
             }
         }
+    }
+
+
+    override function closeSubState() 
+    {
+        super.closeSubState();
+
+        hasExited = false;
+
+        FlxTween.tween(FlxG.camera, {zoom: 1}, 0.65, {ease: FlxEase.quartOut});
+        FlxTween.tween(bgTransition, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
     }
 }
