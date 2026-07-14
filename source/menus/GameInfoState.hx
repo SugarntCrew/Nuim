@@ -1,5 +1,6 @@
 package menus;
 
+import ui.games.PlayButton;
 import ui.games.Heroe;
 
 class GameInfoState extends Substate
@@ -12,6 +13,7 @@ class GameInfoState extends Substate
     var line:FlxSprite;
 
     var titleText:FlxText;
+    var playButton:PlayButton;
 
     var header:Header;
     var footer:Footer;
@@ -54,6 +56,13 @@ class GameInfoState extends Substate
         titleText.x = line.x + 20;
         titleText.y = line.y - titleText.height - 5;
         add(titleText);
+
+        playButton = new PlayButton(line.x + 20, line.y + 20, data, FlxG.cameras.list[FlxG.cameras.list.length - 1]);
+        playButton.onHoverCallback = function(data)
+        {
+            FlxG.sound.play(Paths.sound('changeSfx'));
+        }
+        add(playButton);
         
         header = new Header();
         header.scrollFactor.set(0, 0);
