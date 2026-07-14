@@ -17,6 +17,8 @@ class Grid extends FlxSpriteGroup implements IClickable
     public var gridText:FlxText;
 
     public var onClickCallback:(data:GameData, ?customBehavior:Dynamic) -> Void;
+    public var onHoverCallback:(data:GameData) -> Void;
+    public var hoverCallback:(data:GameData) -> Void;
 
     public function new(x:Float, y:Float, _data:GameData)
     {
@@ -101,11 +103,14 @@ class Grid extends FlxSpriteGroup implements IClickable
     public function onHover()
     {
         Mouse.cursor = BUTTON;
+        if(onHoverCallback != null) onHoverCallback(data);
     }
 
     public function hover(hover:Bool)
     {
         targetScale = hover ? 1.05 : 1;
+
+        if(hoverCallback != null && hover) hoverCallback(data);
     }
 
     public function onUnhover()

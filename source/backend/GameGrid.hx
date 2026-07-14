@@ -5,6 +5,7 @@ typedef GameData =
     var name:String;
     
     @:optional var grid_image:String;
+    @:optional var heroe_image:String;
 }
 
 class GameGrid
@@ -24,10 +25,12 @@ class GameGrid
         },
         {
             name: "Y-Sides",
-            grid_image: 'ysides'
+            grid_image: 'ysides',
+            heroe_image: 'ysides'
         },
         {
-            name: "+2 Billetes"
+            name: "+2 Billetes",
+            heroe_image: '2billetes'
         },
         {
             name: "My Hero Academia"

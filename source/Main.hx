@@ -16,6 +16,7 @@ class Main extends Sprite
         
         // FlxG.mouse.useSystemCursor = true;
         FlxSprite.defaultAntialiasing = true;
+        FlxG.autoPause = false;
 
         var game = new FlxGame(game.width, game.height, game.initialState, game.fps, game.fps, game.skipSplash);
 		addChild(game);

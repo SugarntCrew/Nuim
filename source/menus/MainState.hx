@@ -1,5 +1,7 @@
 package menus;
 
+import ui.games.Heroe;
+
 class MainState extends State
 {
     // private (backend) vars
@@ -8,6 +10,8 @@ class MainState extends State
     // visual vars
     var colorBG:FlxSprite;
     var board:FlxSprite;
+    var heroeGradient:FlxSprite;
+    var heroe:Heroe;
     var header:Header;
     var footer:Footer;
 
@@ -20,6 +24,16 @@ class MainState extends State
         colorBG = new FlxSprite();
         colorBG.makeGraphic(FlxG.width, FlxG.height, 0xFFC9C9C9);
         add(colorBG);
+
+        heroe = new Heroe(0, 0, 'JFAKSDJGFASKLGJASKLGJASKLGJAKLSJGLKJASG');
+        add(heroe);
+
+        heroeGradient = new FlxSprite();
+        heroeGradient.loadGraphic(Paths.image('ui/heroeGradient'));
+        heroeGradient.screenCenter(X);
+        heroeGradient.y = FlxG.height - heroeGradient.height;
+        heroeGradient.blend = ADD;
+        add(heroeGradient);
 
         board = new FlxSprite();
         board.loadGraphic(Paths.image('ui/board'));
@@ -58,6 +72,22 @@ class MainState extends State
                 }});
             }
 
+            grid.onHoverCallback = function(data)
+            {
+                timer = 0;
+                heroe.alreadyRegen = false;
+            }
+
+            grid.hoverCallback = function(data)
+            {
+                trace(data);
+                timer += FlxG.elapsed;
+                if(timer > heroe.regenTime && !heroe.alreadyRegen)
+                {
+                    heroe.regenImage(data.heroe_image);
+                }
+            }
+
             add(grid);
 
             numX++;
@@ -74,5 +104,13 @@ class MainState extends State
         bgTransition.makeGraphic(FlxG.width, FlxG.height, 0xFF000000);
         bgTransition.alpha = 0;
         add(bgTransition);
+    }
+
+    var timer:Float = 0;
+    override function update(elapsed:Float)
+    {
+        super.update(elapsed);
+
+        timer += elapsed;
     }
 }
