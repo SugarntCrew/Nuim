@@ -2,7 +2,7 @@ package ui.header;
 
 import backend.DateUtils;
 
-class DateText extends FlxText
+class HourText extends FlxText
 {
     public function new(x:Float = 0, y:Float = 0, fieldWidth:Int = 0, text:String = '', size:Int = 16)
     {
@@ -13,6 +13,6 @@ class DateText extends FlxText
     {
         super.update(elapsed);
 
-        text = DateUtils.formatDate(DateUtils.getCurrentDate());
+        text = DateUtils.formatTime(DateUtils.getCurrentTime());
     }
 }

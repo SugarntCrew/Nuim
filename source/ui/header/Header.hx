@@ -9,6 +9,7 @@ class Header extends FlxSpriteGroup
 
     public var headerBackground:FlxSprite;
     public var userAccountUI:UserAccountUI;
+    public var hourTimeTxt:HourText;
     public var dateTimeTxt:DateText;
     public function new()
     {
@@ -37,11 +38,18 @@ class Header extends FlxSpriteGroup
         }
         add(userAccountUI);
 
-        dateTimeTxt = new DateText();
-        dateTimeTxt.text = DateUtils.formatTime(DateUtils.getCurrentTime());
-        dateTimeTxt.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
-        dateTimeTxt.x = 1490;
-        dateTimeTxt.y = 123 / 2 - dateTimeTxt.height / 2;
+        hourTimeTxt = new HourText(0, 0, 250);
+        hourTimeTxt.text = DateUtils.formatTime(DateUtils.getCurrentTime());
+        hourTimeTxt.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, CENTER);
+        hourTimeTxt.x = 1410;
+        hourTimeTxt.y = 123 / 2 - hourTimeTxt.height / 2 - 15;
+        add(hourTimeTxt);
+
+        dateTimeTxt = new DateText(0, 0, 250);
+        dateTimeTxt.text = DateUtils.formatDate(DateUtils.getCurrentDate());
+        dateTimeTxt.setFormat(Paths.font('advent_pro'), 25, 0xFFEBEBEB, CENTER);
+        dateTimeTxt.x = 1410;
+        dateTimeTxt.y = hourTimeTxt.y + hourTimeTxt.height;
         add(dateTimeTxt);
     }
 }
