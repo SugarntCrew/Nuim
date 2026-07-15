@@ -94,6 +94,7 @@ class MainState extends State
                 if(hasExited) return;
                 hasExited = true;
 
+                heroe?.onEnterGame(data, 0.65);
                 FlxG.sound.play(Paths.sound('acceptSfx'));
                 
                 FlxTween.tween(footer, {y: FlxG.height}, 0.65, {ease: FlxEase.quartIn});
@@ -116,7 +117,7 @@ class MainState extends State
 
             grid.hoverCallback = function(data)
             {
-                trace(data);
+                // trace(data);
                 timer += FlxG.elapsed;
                 if(timer > heroe.regenTime && !heroe.alreadyRegen)
                 {

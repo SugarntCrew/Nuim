@@ -1,5 +1,7 @@
 package menus;
 
+import menus.ImagesDot.ImageDot;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import sys.io.File;
 import sys.FileSystem;
 import backend.api.GamebananaAPI;
@@ -24,6 +26,9 @@ class GameInfoState extends Substate
     var titleText:FlxText;
     var playButton:PlayButton;
 
+    var previewImage:FlxSprite;
+    var previewImageDotsGrp:ImagesDot;
+
     var descriptionBackground:FlxSprite;
     var descriptionTitleText:FlxText;
     var descriptionLine:FlxSprite;
@@ -44,8 +49,6 @@ class GameInfoState extends Substate
     var versionTitleText:FlxText;
     var versionLine:FlxSprite;
     var versionText:FlxText;
-
-    var previewImage:FlxSprite;
 
     var header:Header;
     var footer:Footer;
@@ -104,6 +107,7 @@ class GameInfoState extends Substate
 
         previewImage.x = line.x + 35;
         previewImage.y = playButton.y + playButton.height + 30;
+        previewImage.visible = hasGbLink;
         add(previewImage);
 
         descriptionBackground = new FlxSprite();
@@ -193,7 +197,19 @@ class GameInfoState extends Substate
         header.scrollFactor.set(0, 0);
         add(header);
 
-        if(hasGbLink) installPortalImages();
+        if(hasGbLink) 
+        {
+            installPortalImages();
+
+            previewImageDotsGrp = new ImagesDot(0, 0, imageNum, curSelectedImage);
+            previewImageDotsGrp.x = previewImage.x + previewImage.width / 2 - previewImageDotsGrp.width / 2;
+            previewImageDotsGrp.y = previewImage.y + previewImage.height + 20;
+            add(previewImageDotsGrp);
+        }
+
+
+        changeImageSelect();
+
         camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
     }
 
@@ -246,13 +262,29 @@ class GameInfoState extends Substate
 
     function changeImageSelect(change:Int = 0)
     {
+        if(!hasGbLink) return;
+
+        if(change != 0) FlxG.sound.play(Paths.sound('changeSfx'));
+        
         curSelectedImage = FlxMath.wrap(curSelectedImage + change, 0, imageNum - 1);
         reloadImages('image$curSelectedImage');
 
         FlxTween.cancelTweensOf(previewImage);
 
-        previewImage.x += change > 0 ? 10 : -10;
-        FlxTween.tween(previewImage, {x: previewImage.x + (change > 0 ? -10 : 10)}, 0.5, {ease: FlxEase.quartOut});
+        if(change != 0 && previewImage != null)
+        {
+            previewImage.x += change > 0 ? 10 : -10;
+            FlxTween.tween(previewImage, {x: previewImage.x + (change > 0 ? -10 : 10)}, 0.5, {ease: FlxEase.quartOut});
+        } 
+
+        if(previewImageDotsGrp != null)
+        {
+            for(obj in previewImageDotsGrp.members)
+            {
+                var castedObj = cast(obj, ImageDot);
+                castedObj.dotSelected = curSelectedImage == obj.ID;
+            }
+        }
     }
 
     function goBackToMain()
@@ -290,8 +322,6 @@ class GameInfoState extends Substate
         previewImage.loadGraphic(openfl.display.BitmapData.fromFile(path));
         previewImage.setGraphicSize(750);
         previewImage.updateHitbox();
-
-        if(previewImage.graphic == null) previewImage.visible = false;
 
         var width:Float = descriptionBackground.x - (line.x + 35);
         previewImage.x = line.x + 35 + width / 2 - previewImage.width / 2;

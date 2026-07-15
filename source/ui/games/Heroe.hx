@@ -29,7 +29,6 @@ class Heroe extends FlxSprite
     public function regenImage(path:String, ?skipOutTrans:Bool = false, ?skipEntire:Bool = false)
     {
         if(prevPath == path) return; // lmao
-        prevPath = path;
 
         alreadyRegen = true;
 
@@ -40,11 +39,29 @@ class Heroe extends FlxSprite
         }
         else
         {
-            FlxTween.tween(this, {alpha: 0}, 1, {ease: FlxEase.quadIn, onComplete: function(twn:FlxTween)
+            alphaTween = FlxTween.tween(this, {alpha: 0}, 1, {ease: FlxEase.quadIn, onComplete: function(twn:FlxTween)
             {
+                alphaTween = null;
                 generate(path);
             }});
         }
+    }
+
+    public function onEnterGame(data:GameData, duration:Float)
+    {
+        if(alphaTween != null) alphaTween.cancel();
+
+        trace('$prevPath != ${data.heroe_image}');
+
+        if(prevPath != data.heroe_image) 
+        {
+            generate(data.heroe_image, true);
+            alpha = 0;
+        }
+
+
+        alphaTween = FlxTween.tween(this, {alpha: 1}, duration, {ease: FlxEase.quartOut, onComplete: (_) -> alphaTween = null});
+        FlxTween.tween(this, {x: 0}, duration, {ease: FlxEase.quartOut});
     }
 
     function generate(path:String, skipTrans:Bool = false)
@@ -57,6 +74,7 @@ class Heroe extends FlxSprite
         }
 
         loadGraphic(fullPath);
+        prevPath = path;
 
         if(skipTrans)
         {
