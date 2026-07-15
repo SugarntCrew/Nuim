@@ -5,7 +5,7 @@ import sys.FileSystem;
 
 class Heroe extends FlxSprite
 {
-    public var regenTime:Float = 1;
+    public var regenTime:Float = 0.5;
     public var alreadyRegen:Bool = false;
     public var alphaTween:FlxTween;
     public var blurShader:BlurShader;
