@@ -1,5 +1,6 @@
 package menus;
 
+import sys.thread.Thread;
 import backend.Constants;
 import sys.io.Process;
 import ui.games.GamebananaButton;
@@ -71,7 +72,10 @@ class GameInfoState extends Substate
     var spacingFieldsY:Float = 25;
     override function create()
     {
+        super.create();
         trace('Substate opened!');
+
+        main = Thread.current();
 
         previewImage = new FlxSprite();
 
@@ -149,7 +153,7 @@ class GameInfoState extends Substate
 
         previewImage.x = line.x + 35;
         previewImage.y = playButton.y + playButton.height + 30;
-        previewImage.visible = hasGbLink;
+        previewImage.visible = false;
         add(previewImage);
 
         descriptionBackground = new FlxSprite();
@@ -242,15 +246,7 @@ class GameInfoState extends Substate
         if(hasGbLink) 
         {
             installPortalImages();
-
-            previewImageDotsGrp = new ImagesDot(0, 0, imageNum, curSelectedImage);
-            previewImageDotsGrp.x = previewImage.x + previewImage.width / 2 - previewImageDotsGrp.width / 2;
-            previewImageDotsGrp.y = previewImage.y + previewImage.height + 20;
-            add(previewImageDotsGrp);
         }
-
-
-        changeImageSelect();
 
         camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
     }
@@ -300,11 +296,35 @@ class GameInfoState extends Substate
                 }
             }
         }
+
+        // async stuff
+        var msg = Thread.readMessage(false);
+        while(msg != null)
+        {
+            if(!subAlive) break;
+            switch(msg.type)
+            {
+                case 'images_ready':
+                    modId = msg.modId;
+                    imageNum = msg.imageNum;
+
+                    previewImage.visible = true;
+                    changeImageSelect();
+
+                    previewImageDotsGrp = new ImagesDot(0, 0, imageNum, curSelectedImage);
+                    previewImageDotsGrp.x = previewImage.x + previewImage.width / 2 - previewImageDotsGrp.width / 2;
+                    previewImageDotsGrp.y = previewImage.y + previewImage.height + 20;
+                    add(previewImageDotsGrp);
+                default:
+            }
+
+            msg = Thread.readMessage(false);
+        }
     }
 
     function changeImageSelect(change:Int = 0)
     {
-        if(!hasGbLink) return;
+        if(!hasGbLink || imageNum <= 0) return;
 
         if(change != 0) FlxG.sound.play(Paths.sound('changeSfx'));
         
@@ -336,23 +356,34 @@ class GameInfoState extends Substate
         close();
     }
 
+    var main:Thread;
     function installPortalImages()
     {
-        GamebananaAPI.requestData(data.gamebanana_url, [IMAGES], function(apiData, id)
-        {
-            modId = id;
-            trace(apiData);
-            var images = apiData._aPreviewMedia._aImages;
-            for(num => image in cast(images, Array<Dynamic>))
+        Thread.create(() -> {
+            var localImageNum:Int = 0;
+            GamebananaAPI.requestData(data.gamebanana_url, [IMAGES], function(apiData, id)
             {
-                var imageUrl = '${image._sBaseUrl}/${image._sFile}';
-                trace(imageUrl);
-                GamebananaAPI.saveImageFromURL(imageUrl, id, 'image$num');
-                imageNum++;
-            }
+                trace(apiData);
+                var images = apiData._aPreviewMedia._aImages;
+                for(num => image in cast(images, Array<Dynamic>))
+                {
+                    var imageUrl = '${image._sBaseUrl}/${image._sFile}';
+                    trace(imageUrl);
+                    GamebananaAPI.saveImageFromURL(imageUrl, id, 'image$num');
+                    localImageNum++;
+                }
 
-            trace('Finished! Reloading images...');
-            reloadImages('image$curSelectedImage');
+                trace('Finished! Reloading images...');
+                if(subAlive)
+                {
+                    main.sendMessage({
+                        type: 'images_ready',
+                        modId: id,
+                        imageNum: localImageNum
+                    });
+                }
+                //reloadImages('image$curSelectedImage');
+            });
         });
     }
 
@@ -367,5 +398,12 @@ class GameInfoState extends Substate
 
         var width:Float = descriptionBackground.x - (line.x + 35);
         previewImage.x = line.x + 35 + width / 2 - previewImage.width / 2;
+    }
+
+    var subAlive:Bool = true;
+    override function destroy()
+    {
+        subAlive = false;
+        super.destroy();
     }
 }
