@@ -1,5 +1,7 @@
 package menus;
 
+import sys.io.File;
+import sys.FileSystem;
 import backend.api.GamebananaAPI;
 import ui.games.PlayButton;
 import ui.games.Heroe;
@@ -8,6 +10,12 @@ class GameInfoState extends Substate
 {
     private var data:GameData;
     private var camReference:FlxCamera;
+
+    public var hasGbLink:Bool = false;
+    public var modId:String = '';
+    public var imageNum:Int = 0;
+    public var curSelectedImage:Int = 0;
+
     var heroe:Heroe;
     var backgroundGradient:FlxSprite;
     var background:FlxSprite;
@@ -37,6 +45,8 @@ class GameInfoState extends Substate
     var versionLine:FlxSprite;
     var versionText:FlxText;
 
+    var previewImage:FlxSprite;
+
     var header:Header;
     var footer:Footer;
 
@@ -46,6 +56,9 @@ class GameInfoState extends Substate
 
         data = _data;
         camReference = _camReference;
+        hasGbLink = data.gamebanana_url != null;
+
+        trace('GAMEBANANA LINK PRESENCE IS $hasGbLink');
     }
 
     var spacingFieldsY:Float = 25;
@@ -53,7 +66,7 @@ class GameInfoState extends Substate
     {
         trace('Substate opened!');
 
-        installPortalImages();
+        previewImage = new FlxSprite();
 
         heroe = new Heroe(0, 0, data.heroe_image, true);
         add(heroe);
@@ -88,6 +101,10 @@ class GameInfoState extends Substate
             FlxG.sound.play(Paths.sound('changeSfx'));
         }
         add(playButton);
+
+        previewImage.x = line.x + 35;
+        previewImage.y = playButton.y + playButton.height + 30;
+        add(previewImage);
 
         descriptionBackground = new FlxSprite();
         descriptionBackground.makeGraphic(800, FlxG.height, 0xFF000000);
@@ -176,6 +193,7 @@ class GameInfoState extends Substate
         header.scrollFactor.set(0, 0);
         add(header);
 
+        if(hasGbLink) installPortalImages();
         camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
     }
 
@@ -188,7 +206,17 @@ class GameInfoState extends Substate
         if(FlxG.keys.justPressed.ESCAPE)
         {
             goBackToMain();
-        }        
+        }
+
+        if(FlxG.keys.justPressed.LEFT)
+        {
+            changeImageSelect(-1);
+        }
+
+        if(FlxG.keys.justPressed.RIGHT)
+        {
+            changeImageSelect(1);
+        }
         
         var mult = FlxMath.lerp(camReference.scroll.y, targetScrollY, elapsed * 12);
         camReference.scroll.set(0, mult);
@@ -216,6 +244,17 @@ class GameInfoState extends Substate
         }
     }
 
+    function changeImageSelect(change:Int = 0)
+    {
+        curSelectedImage = FlxMath.wrap(curSelectedImage + change, 0, imageNum - 1);
+        reloadImages('image$curSelectedImage');
+
+        FlxTween.cancelTweensOf(previewImage);
+
+        previewImage.x += change > 0 ? 10 : -10;
+        FlxTween.tween(previewImage, {x: previewImage.x + (change > 0 ? -10 : 10)}, 0.5, {ease: FlxEase.quartOut});
+    }
+
     function goBackToMain()
     {
         trace('Going back to main!');
@@ -225,8 +264,9 @@ class GameInfoState extends Substate
 
     function installPortalImages()
     {
-        GamebananaAPI.requestData('https://gamebanana.com/mods/586813', [IMAGES], function(apiData, id)
+        GamebananaAPI.requestData(data.gamebanana_url, [IMAGES], function(apiData, id)
         {
+            modId = id;
             trace(apiData);
             var images = apiData._aPreviewMedia._aImages;
             for(num => image in cast(images, Array<Dynamic>))
@@ -234,7 +274,26 @@ class GameInfoState extends Substate
                 var imageUrl = '${image._sBaseUrl}/${image._sFile}';
                 trace(imageUrl);
                 GamebananaAPI.saveImageFromURL(imageUrl, id, 'image$num');
+                imageNum++;
             }
+
+            trace('Finished! Reloading images...');
+            reloadImages('image$curSelectedImage');
         });
+    }
+
+    function reloadImages(image:String)
+    {
+        trace('Reloading images...');
+
+        var path = Paths.gamebananaAPIimage('cache/games/portal/$modId/$image');
+        previewImage.loadGraphic(openfl.display.BitmapData.fromFile(path));
+        previewImage.setGraphicSize(750);
+        previewImage.updateHitbox();
+
+        if(previewImage.graphic == null) previewImage.visible = false;
+
+        var width:Float = descriptionBackground.x - (line.x + 35);
+        previewImage.x = line.x + 35 + width / 2 - previewImage.width / 2;
     }
 }

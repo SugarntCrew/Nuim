@@ -16,15 +16,15 @@ class GamebananaAPI
 {
     public static function saveImageFromURL(imageurl:String, modId:String, fileName:String)
     {
-        if(FileSystem.exists(Paths.image('cache/games/portal/$modId/$fileName'))) return;
-        trace('Did not find ${Paths.image('cache/games/portal/$modId/$fileName')}. Downloading from GameBanana...');
+        if(FileSystem.exists(Paths.gamebananaAPIimage('cache/games/portal/$modId/$fileName'))) return;
+        trace('Did not find ${Paths.gamebananaAPIimage('cache/games/portal/$modId/$fileName')}. Downloading from GameBanana...');
         
         var http = new Http(imageurl);
         http.onBytes = function(bytes)
         {
             if(!FileSystem.exists('assets/images/cache/games/portal/$modId')) FileSystem.createDirectory('assets/images/cache/games/portal/$modId');
 
-            File.saveBytes(Paths.image('cache/games/portal/$modId/$fileName'), bytes);
+            File.saveBytes(Paths.gamebananaAPIimage('cache/games/portal/$modId/$fileName'), bytes);
         }
 
         http.onError = function(error)

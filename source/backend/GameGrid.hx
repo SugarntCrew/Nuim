@@ -12,6 +12,7 @@ typedef GameData =
     @:optional var genre:String;
     @:optional var release:String;
     @:optional var version:String;
+    @:optional var gamebanana_url:String;
 }
 
 class GameGrid
@@ -38,7 +39,8 @@ class GameGrid
             publisher: 'SugarntCrew',
             genre: 'Rythm',
             release: '2026',
-            version: 'v2.0.1'
+            version: 'v2.0.1',
+            gamebanana_url: 'https://gamebanana.com/mods/586813'
         },
         {
             name: "+2 Billetes",
