@@ -3,6 +3,7 @@ package backend;
 typedef GameData = 
 {
     var name:String;
+    var game_location:String;
     
     @:optional var description:String;
     @:optional var grid_image:String;
@@ -19,19 +20,24 @@ class GameGrid
 {
     public static var games(default, default):Array<GameData> = [
         {
-            name: "Hola caracola"
+            name: "Hola caracola",
+            game_location: ""
         },
         {
-            name: "Mario Wonder"
+            name: "Mario Wonder",
+            game_location: ""
         },
         {
-            name: "Tears of the Kingdom"
+            name: "Tears of the Kingdom",
+            game_location: ""
         },
         {
-            name: "Fortnite"
+            name: "Fortnite",
+            game_location: ""
         },
         {
             name: "Friday Night Funkin': Y-Sides",
+            game_location: "C:\\Users\\ismae\\Documents\\GitHub\\FNF-Y-SIDES-DEV\\export\\release\\windows\\bin\\YSides.exe",
             description: 'A remix mod made by a group of friends!',
             grid_image: 'ysides',
             heroe_image: 'ysides',
@@ -44,10 +50,12 @@ class GameGrid
         },
         {
             name: "+2 Billetes",
+            game_location: "",
             heroe_image: '2billetes'
         },
         {
-            name: "My Hero Academia"
+            name: "My Hero Academia",
+            game_location: ""
         }
     ];
 }

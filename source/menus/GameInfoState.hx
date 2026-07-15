@@ -1,5 +1,7 @@
 package menus;
 
+import backend.Constants;
+import sys.io.Process;
 import ui.games.GamebananaButton;
 import menus.ImagesDot.ImageDot;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -114,6 +116,34 @@ class GameInfoState extends Substate
         playButton.onHoverCallback = function(data)
         {
             FlxG.sound.play(Paths.sound('changeSfx'));
+        }
+        playButton.onClickCallback = function(data, ?customBehavior)
+        {
+            var location:String = data.game_location;
+            
+            if(!FileSystem.exists(location)) return;
+
+            trace(location);
+
+            var path = location.substr(0, location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\"));
+            var exeName = location.substr((location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\")) + 1, location.length);
+            if(!StringTools.endsWith(exeName, '.exe')) exeName = location.substr((location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\")) + 1, location.length);
+            if(!StringTools.endsWith(exeName, '.exe')) return;
+
+            trace(exeName);
+            var appName = exeName.substr(0, exeName.length - 4);
+            trace(appName);
+            trace(path);
+
+            Sys.setCwd(path);
+
+            var process = new Process('start $appName');
+            if(process.exitCode() == 0)
+            {
+                trace('Reset path to launcher');
+                Sys.setCwd(Constants.LAUNCHER_PATH);
+            }
+            process.close();
         }
         add(playButton);
 
