@@ -138,9 +138,8 @@ class MainState extends State
         header.cameras = [hudCam];
         add(header);
 
-        footer = new Footer(FlxG.width, 70);
+        footer = new Footer(FlxG.width, 70, hudCam);
         footer.y = FlxG.height - footer.height;
-        footer.cameras = [hudCam];
         add(footer);
 
         bgTransition = new FlxSprite();
