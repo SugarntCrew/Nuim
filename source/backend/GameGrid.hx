@@ -4,6 +4,7 @@ typedef GameData =
 {
     var name:String;
     
+    @:optional var description:String;
     @:optional var grid_image:String;
     @:optional var heroe_image:String;
 }
@@ -25,6 +26,7 @@ class GameGrid
         },
         {
             name: "Friday Night Funkin': Y-Sides",
+            description: 'A remix mod made by a group of friends!',
             grid_image: 'ysides',
             heroe_image: 'ysides'
         },

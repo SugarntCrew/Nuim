@@ -15,6 +15,11 @@ class GameInfoState extends Substate
     var titleText:FlxText;
     var playButton:PlayButton;
 
+    var descriptionBackground:FlxSprite;
+    var descriptionTitleText:FlxText;
+    var descriptionLine:FlxSprite;
+    var descriptionText:FlxText;
+
     var header:Header;
     var footer:Footer;
 
@@ -63,6 +68,28 @@ class GameInfoState extends Substate
             FlxG.sound.play(Paths.sound('changeSfx'));
         }
         add(playButton);
+
+        descriptionBackground = new FlxSprite();
+        descriptionBackground.makeGraphic(800, FlxG.height, 0xFF000000);
+        descriptionBackground.alpha = 0.56;
+        descriptionBackground.x = FlxG.width - 60 - descriptionBackground.width - 20;
+        descriptionBackground.y = line.y + 20;
+        add(descriptionBackground);
+
+        descriptionTitleText = new FlxText(descriptionBackground.x + 10, descriptionBackground.y + 10, descriptionBackground.width - 20, 'Description', 16);
+        descriptionTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        add(descriptionTitleText);
+
+        descriptionLine = new FlxSprite();
+        descriptionLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
+        descriptionLine.x = descriptionBackground.x + 10;
+        descriptionLine.y = descriptionTitleText.y + descriptionTitleText.height + 5;
+        descriptionLine.alpha = 0.7;
+        add(descriptionLine);
+
+        descriptionText = new FlxText(descriptionBackground.x + 10, descriptionLine.y + 10, descriptionBackground.width - 20, data.description ?? 'No description provided.', 16);
+        descriptionText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        add(descriptionText);
         
         header = new Header();
         header.scrollFactor.set(0, 0);
