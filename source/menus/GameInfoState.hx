@@ -54,7 +54,6 @@ class GameInfoState extends Substate
         trace('Substate opened!');
 
         installPortalImages();
-        GamebananaAPI.saveImageFromURL('https://images.gamebanana.com/img/ss/mods/530-90_6a4405c450082.jpg', 'image1');
 
         heroe = new Heroe(0, 0, data.heroe_image, true);
         add(heroe);
@@ -226,7 +225,7 @@ class GameInfoState extends Substate
 
     function installPortalImages()
     {
-        GamebananaAPI.requestData('https://gamebanana.com/mods/586813', [IMAGES], function(apiData)
+        GamebananaAPI.requestData('https://gamebanana.com/mods/586813', [IMAGES], function(apiData, id)
         {
             trace(apiData);
             var images = apiData._aPreviewMedia._aImages;
@@ -234,7 +233,7 @@ class GameInfoState extends Substate
             {
                 var imageUrl = '${image._sBaseUrl}/${image._sFile}';
                 trace(imageUrl);
-                GamebananaAPI.saveImageFromURL(imageUrl, 'image$num');
+                GamebananaAPI.saveImageFromURL(imageUrl, id, 'image$num');
             }
         });
     }

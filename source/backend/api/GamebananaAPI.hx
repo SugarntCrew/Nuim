@@ -14,17 +14,17 @@ enum GamebananaPropierties
 
 class GamebananaAPI
 {
-    public static function saveImageFromURL(imageurl:String, fileName:String)
+    public static function saveImageFromURL(imageurl:String, modId:String, fileName:String)
     {
-        if(FileSystem.exists(Paths.image('cache/games/portal/$fileName'))) return;
-        trace('Did not find ${Paths.image('cache/games/portal/$fileName')}. Downloading from GameBanana...');
+        if(FileSystem.exists(Paths.image('cache/games/portal/$modId/$fileName'))) return;
+        trace('Did not find ${Paths.image('cache/games/portal/$modId/$fileName')}. Downloading from GameBanana...');
         
         var http = new Http(imageurl);
         http.onBytes = function(bytes)
         {
-            if(!FileSystem.exists('assets/images/cache/games/portal/')) FileSystem.createDirectory('assets/images/cache/games/portal/');
+            if(!FileSystem.exists('assets/images/cache/games/portal/$modId')) FileSystem.createDirectory('assets/images/cache/games/portal/$modId');
 
-            File.saveBytes(Paths.image('cache/games/portal/$fileName'), bytes);
+            File.saveBytes(Paths.image('cache/games/portal/$modId/$fileName'), bytes);
         }
 
         http.onError = function(error)
@@ -35,7 +35,7 @@ class GamebananaAPI
         http.request(false);
     }
 
-    public static function requestData(modUrl:String, propierties:Array<GamebananaPropierties>, callback:(Dynamic)->Void)
+    public static function requestData(modUrl:String, propierties:Array<GamebananaPropierties>, callback:(data:Dynamic, modID:String)->Void)
     {
         var modId:String = modUrl.substr(modUrl.length - 6, modUrl.length);
         trace(modId);
@@ -59,7 +59,7 @@ class GamebananaAPI
         http.onData = function(data)
         {
             var jsonRaw:Dynamic = Json.parse(data);
-            callback(jsonRaw);
+            callback(jsonRaw, modId);
         }
 
         http.request(false);
