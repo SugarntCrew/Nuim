@@ -3,14 +3,16 @@ package backend.api;
 import sys.FileSystem;
 import sys.io.File;
 import haxe.Http;
+import htmlparser.HtmlDocument;
 
 class GamebananaAPI
 {
-    public static function saveImageFromURL(url:String, fileName:String)
+    public static function saveImageFromURL(imageurl:String, fileName:String)
     {
         if(FileSystem.exists(Paths.image('cache/games/portal/$fileName'))) return;
+        trace('Did not find ${Paths.image('cache/games/portal/$fileName')}. Downloading from GameBanana...');
         
-        var http = new Http(url);
+        var http = new Http(imageurl);
         http.onBytes = function(bytes)
         {
             if(!FileSystem.exists('assets/images/cache/games/portal/')) FileSystem.createDirectory('assets/images/cache/games/portal/');
