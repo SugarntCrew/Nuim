@@ -75,11 +75,11 @@ class GameInfoState extends Substate
 
         titleText = new FlxText(0, 0, 0, data.name);
         titleText.setFormat(Paths.font('advent_pro'), 70, 0xFFFFFFFF, LEFT);
-        titleText.x = line.x + 20;
+        titleText.x = line.x + 35;
         titleText.y = line.y - titleText.height - 5;
         add(titleText);
 
-        playButton = new PlayButton(line.x + 20, line.y + 20, data, FlxG.cameras.list[FlxG.cameras.list.length - 1]);
+        playButton = new PlayButton(line.x + 35, line.y + 20, data, FlxG.cameras.list[FlxG.cameras.list.length - 1]);
         playButton.onHoverCallback = function(data)
         {
             FlxG.sound.play(Paths.sound('changeSfx'));
@@ -204,9 +204,9 @@ class GameInfoState extends Substate
             else if(FlxG.mouse.wheel < 0)
             {
                 targetScrollY += scrollIntensity;
-                if(targetScrollY > 480) 
+                if(targetScrollY > versionText.y + versionText.height - FlxG.camera.height + 10) 
                 {
-                    targetScrollY = 480;
+                    targetScrollY = versionText.y + versionText.height - FlxG.camera.height + 10;
                     //mainCam.scroll.set(0, targetScrollY);
                 }
             }
