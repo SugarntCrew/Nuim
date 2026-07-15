@@ -19,6 +19,22 @@ class GameInfoState extends Substate
     var descriptionTitleText:FlxText;
     var descriptionLine:FlxSprite;
     var descriptionText:FlxText;
+    
+    var companyTitleText:FlxText;
+    var companyLine:FlxSprite;
+    var companyText:FlxText;
+
+    var genreTitleText:FlxText;
+    var genreLine:FlxSprite;
+    var genreText:FlxText;
+
+    var releaseTitleText:FlxText;
+    var releaseLine:FlxSprite;
+    var releaseText:FlxText;
+
+    var versionTitleText:FlxText;
+    var versionLine:FlxSprite;
+    var versionText:FlxText;
 
     var header:Header;
     var footer:Footer;
@@ -31,6 +47,7 @@ class GameInfoState extends Substate
         camReference = _camReference;
     }
 
+    var spacingFieldsY:Float = 25;
     override function create()
     {
         trace('Substate opened!');
@@ -90,6 +107,67 @@ class GameInfoState extends Substate
         descriptionText = new FlxText(descriptionBackground.x + 10, descriptionLine.y + 10, descriptionBackground.width - 20, data.description ?? 'No description provided.', 16);
         descriptionText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
         add(descriptionText);
+
+        companyTitleText = new FlxText(descriptionBackground.x + 10, descriptionText.y + descriptionText.height + spacingFieldsY, descriptionBackground.width - 20, 'Company', 16);
+        companyTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        add(companyTitleText);
+
+        companyLine = new FlxSprite();
+        companyLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
+        companyLine.x = descriptionBackground.x + 10;
+        companyLine.y = companyTitleText.y + companyTitleText.height + 5;
+        companyLine.alpha = 0.7;
+        add(companyLine);
+
+        var companyTxt:String = 'Developed by ${data.developer ?? 'Unknown'}\nPublished by ${data.publisher ?? 'Unknown'}';
+        companyText = new FlxText(descriptionBackground.x + 10, companyLine.y + 10, descriptionBackground.width - 20, companyTxt, 16);
+        companyText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        add(companyText);
+
+        genreTitleText = new FlxText(descriptionBackground.x + 10, companyText.y + companyText.height + spacingFieldsY, descriptionBackground.width - 20, 'Genre', 16);
+        genreTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        add(genreTitleText);
+
+        genreLine = new FlxSprite();
+        genreLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
+        genreLine.x = descriptionBackground.x + 10;
+        genreLine.y = genreTitleText.y + genreTitleText.height + 5;
+        genreLine.alpha = 0.7;
+        add(genreLine);
+
+        genreText = new FlxText(descriptionBackground.x + 10, genreLine.y + 10, descriptionBackground.width - 20, data.genre ?? 'Unknown', 16);
+        genreText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        add(genreText);
+
+        releaseTitleText = new FlxText(descriptionBackground.x + 10, genreText.y + genreText.height + spacingFieldsY, descriptionBackground.width - 20, 'Release', 16);
+        releaseTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        add(releaseTitleText);
+
+        releaseLine = new FlxSprite();
+        releaseLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
+        releaseLine.x = descriptionBackground.x + 10;
+        releaseLine.y = releaseTitleText.y + releaseTitleText.height + 5;
+        releaseLine.alpha = 0.7;
+        add(releaseLine);
+
+        releaseText = new FlxText(descriptionBackground.x + 10, releaseLine.y + 10, descriptionBackground.width - 20, data.release ?? 'Unknown', 16);
+        releaseText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        add(releaseText);
+
+        versionTitleText = new FlxText(descriptionBackground.x + 10, releaseText.y + releaseText.height + spacingFieldsY, descriptionBackground.width - 20, 'Version', 16);
+        versionTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        add(versionTitleText);
+
+        versionLine = new FlxSprite();
+        versionLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
+        versionLine.x = descriptionBackground.x + 10;
+        versionLine.y = versionTitleText.y + versionTitleText.height + 5;
+        versionLine.alpha = 0.7;
+        add(versionLine);
+
+        versionText = new FlxText(descriptionBackground.x + 10, versionLine.y + 10, descriptionBackground.width - 20, data.version ?? 'Unknown', 16);
+        versionText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        add(versionText);
         
         header = new Header();
         header.scrollFactor.set(0, 0);

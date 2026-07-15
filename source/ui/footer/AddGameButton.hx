@@ -22,6 +22,7 @@ class AddGameButton extends FlxSpriteGroup implements IClickable
         add(addGameBG);
 
         addGameText = new FlxText(0, 0, 0, '+ Add Game', 40);
+        addGameText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
         addGameText.screenCenter(X);
         addGameText.y += 40;
         add(addGameText);

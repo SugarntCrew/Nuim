@@ -7,6 +7,11 @@ typedef GameData =
     @:optional var description:String;
     @:optional var grid_image:String;
     @:optional var heroe_image:String;
+    @:optional var developer:String;
+    @:optional var publisher:String;
+    @:optional var genre:String;
+    @:optional var release:String;
+    @:optional var version:String;
 }
 
 class GameGrid
@@ -28,7 +33,12 @@ class GameGrid
             name: "Friday Night Funkin': Y-Sides",
             description: 'A remix mod made by a group of friends!',
             grid_image: 'ysides',
-            heroe_image: 'ysides'
+            heroe_image: 'ysides',
+            developer: 'SugarntCrew',
+            publisher: 'SugarntCrew',
+            genre: 'Rythm',
+            release: '2026',
+            version: 'v2.0.1'
         },
         {
             name: "+2 Billetes",
