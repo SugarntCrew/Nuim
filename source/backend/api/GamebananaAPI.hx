@@ -3,7 +3,6 @@ package backend.api;
 import sys.FileSystem;
 import sys.io.File;
 import haxe.Http;
-import htmlparser.HtmlDocument;
 
 class GamebananaAPI
 {
