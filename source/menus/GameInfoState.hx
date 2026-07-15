@@ -1,5 +1,6 @@
 package menus;
 
+import backend.api.GamebananaAPI;
 import ui.games.PlayButton;
 import ui.games.Heroe;
 
@@ -51,6 +52,8 @@ class GameInfoState extends Substate
     override function create()
     {
         trace('Substate opened!');
+
+        GamebananaAPI.saveImageFromURL('https://images.gamebanana.com/img/ss/mods/530-90_6a4405c450082.jpg', 'image1');
 
         heroe = new Heroe(0, 0, data.heroe_image, true);
         add(heroe);
