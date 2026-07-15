@@ -1,5 +1,6 @@
 package menus;
 
+import ui.games.GamebananaButton;
 import menus.ImagesDot.ImageDot;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import sys.io.File;
@@ -24,6 +25,7 @@ class GameInfoState extends Substate
     var line:FlxSprite;
 
     var titleText:FlxText;
+    var gamebananaButton:GamebananaButton;
     var playButton:PlayButton;
 
     var previewImage:FlxSprite;
@@ -97,6 +99,16 @@ class GameInfoState extends Substate
         titleText.x = line.x + 35;
         titleText.y = line.y - titleText.height - 5;
         add(titleText);
+
+        gamebananaButton = new GamebananaButton(0, 0, data, camReference);
+        gamebananaButton.x = FlxG.width - gamebananaButton.width - 60 - 35;
+        gamebananaButton.y = line.y - gamebananaButton.height - 5;
+        gamebananaButton.visible = gamebananaButton.active = hasGbLink;
+        gamebananaButton.onClickCallback = function(data, ?customBehavior)
+        {
+            FlxG.openURL(data.gamebanana_url);
+        }
+        add(gamebananaButton);
 
         playButton = new PlayButton(line.x + 35, line.y + 20, data, FlxG.cameras.list[FlxG.cameras.list.length - 1]);
         playButton.onHoverCallback = function(data)
