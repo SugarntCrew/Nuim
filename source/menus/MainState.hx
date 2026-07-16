@@ -94,7 +94,7 @@ class MainState extends State
                 if(hasExited) return;
                 hasExited = true;
 
-                heroe?.onEnterGame(data, 0.65);
+                heroe?.onEnterGame(Paths.image('games/heroes/${data.heroe_image}'), 0.65);
                 FlxG.sound.play(Paths.sound('acceptSfx'));
                 
                 FlxTween.tween(footer, {y: FlxG.height}, 0.65, {ease: FlxEase.quartIn});
@@ -121,7 +121,7 @@ class MainState extends State
                 timer += FlxG.elapsed;
                 if(timer > heroe.regenTime && !heroe.alreadyRegen)
                 {
-                    heroe.regenImage(data.heroe_image);
+                    heroe.regenImage(Paths.image('games/heroes/${data.heroe_image}'));
                 }
             }
 

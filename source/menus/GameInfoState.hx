@@ -85,7 +85,7 @@ class GameInfoState extends Substate
 
         previewImage = new FlxSprite();
 
-        heroe = new Heroe(0, 0, data.heroe_image, true);
+        heroe = new Heroe(0, 0, Paths.image('games/heroes/${data.heroe_image}'), true);
         add(heroe);
 
         backgroundGradient = new FlxSprite(0, 140);

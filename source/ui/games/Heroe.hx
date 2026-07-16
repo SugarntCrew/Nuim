@@ -9,11 +9,15 @@ class Heroe extends FlxSprite
     public var alreadyRegen:Bool = false;
     public var alphaTween:FlxTween;
     public var blurShader:BlurShader;
-    public var prevPath:String = '';
+    public var prevSpr:FlxSprite = null;
+    public var nextSpr:FlxSprite = null;
     
     public function new(x:Float, y:Float, path:String, ?skipEntire:Bool = false)
     {
         super(x, y);
+
+        prevSpr = new FlxSprite();
+        nextSpr = new FlxSprite();
 
         regenImage(path, true, skipEntire);
         color = 0xFF929292;
@@ -28,7 +32,8 @@ class Heroe extends FlxSprite
 
     public function regenImage(path:String, ?skipOutTrans:Bool = false, ?skipEntire:Bool = false)
     {
-        if(prevPath == path) return; // lmao
+        nextSpr.loadGraphic(path);
+        if(prevSpr.graphic == nextSpr.graphic) return; // lmao
 
         alreadyRegen = true;
 
@@ -47,15 +52,16 @@ class Heroe extends FlxSprite
         }
     }
 
-    public function onEnterGame(data:GameData, duration:Float)
+    public function onEnterGame(path:String, duration:Float)
     {
         if(alphaTween != null) alphaTween.cancel();
 
-        trace('$prevPath != ${data.heroe_image}');
+        nextSpr.loadGraphic(path);
+        trace('${prevSpr.graphic} != ${nextSpr.graphic}');
 
-        if(prevPath != data.heroe_image) 
+        if(prevSpr.graphic != nextSpr.graphic) 
         {
-            generate(data.heroe_image, true);
+            generate(path, true);
             alpha = 0;
         }
 
@@ -66,15 +72,15 @@ class Heroe extends FlxSprite
 
     function generate(path:String, skipTrans:Bool = false)
     {
-        var fullPath = Paths.image('games/heroes/$path');
-        if(!FileSystem.exists(Paths.image('games/heroes/$path'))) 
+        if(!FileSystem.exists(path)) 
         {
-            trace('Tried to regenerate but $fullPath did not exist.');
+            trace('Tried to regenerate but $path did not exist.');
             return;
         }
 
-        loadGraphic(fullPath);
-        prevPath = path;
+        loadGraphic(path);
+        prevSpr.loadGraphic(path);
+        nextSpr.loadGraphic(path);
 
         if(skipTrans)
         {
