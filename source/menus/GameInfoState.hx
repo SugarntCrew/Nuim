@@ -366,16 +366,6 @@ class GameInfoState extends Substate
             FlxTween.tween(versionText, {alpha: 0}, duration, {ease: FlxEase.quadOut, onComplete: finishCallback ?? function(twn:FlxTween) {}});
 
             FlxTween.tween(previewImage, {alpha: 0}, duration, {ease: FlxEase.quartOut});
-            if(previewImageDotsGrp != null)
-            {
-                for(obj in previewImageDotsGrp.members)
-                {
-                    var castedObj = cast(obj, ImageDot);
-                    castedObj.dotSelected = false;
-                    castedObj.updateAlpha = false;
-                    FlxTween.tween(castedObj, {alpha: 0}, duration, {ease: FlxEase.quartOut});
-                }
-            }
         }
     }
 
