@@ -1,7 +1,14 @@
 package ui.games;
 
+import openfl.display.BitmapData;
 import shaders.BlurShader;
 import sys.FileSystem;
+
+typedef HeroeParams = 
+{
+    var imagePath:String;
+    var bitmapDataLoad:Bool;
+}
 
 class Heroe extends FlxSprite
 {
@@ -12,14 +19,14 @@ class Heroe extends FlxSprite
     public var prevSpr:FlxSprite = null;
     public var nextSpr:FlxSprite = null;
     
-    public function new(x:Float, y:Float, path:String, ?skipEntire:Bool = false)
+    public function new(x:Float, y:Float, params:HeroeParams, ?skipEntire:Bool = false)
     {
         super(x, y);
 
         prevSpr = new FlxSprite();
         nextSpr = new FlxSprite();
 
-        regenImage(path, true, skipEntire);
+        regenImage(params, true, skipEntire);
         color = 0xFF929292;
         scrollFactor.set(0, 0);
 
@@ -30,9 +37,9 @@ class Heroe extends FlxSprite
         shader = blurShader;
     }
 
-    public function regenImage(path:String, ?skipOutTrans:Bool = false, ?skipEntire:Bool = false)
+    public function regenImage(params:HeroeParams, ?skipOutTrans:Bool = false, ?skipEntire:Bool = false)
     {
-        nextSpr.loadGraphic(path);
+        nextSpr.loadGraphic(((params?.bitmapDataLoad ?? false) ? BitmapData.fromFile(params?.imagePath) : params?.imagePath) ?? Paths.image('games/heroes/template'));
         if(prevSpr.graphic == nextSpr.graphic) return; // lmao
 
         alreadyRegen = true;
@@ -40,28 +47,28 @@ class Heroe extends FlxSprite
         if(alphaTween != null) alphaTween.cancel();
         if(skipOutTrans)
         {
-            generate(path, skipEntire);
+            generate(params, skipEntire);
         }
         else
         {
             alphaTween = FlxTween.tween(this, {alpha: 0}, 1, {ease: FlxEase.quadIn, onComplete: function(twn:FlxTween)
             {
                 alphaTween = null;
-                generate(path);
+                generate(params);
             }});
         }
     }
 
-    public function onEnterGame(path:String, duration:Float)
+    public function onEnterGame(params:HeroeParams, duration:Float)
     {
         if(alphaTween != null) alphaTween.cancel();
 
-        nextSpr.loadGraphic(path);
+        nextSpr.loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
         trace('${prevSpr.graphic} != ${nextSpr.graphic}');
 
         if(prevSpr.graphic != nextSpr.graphic) 
         {
-            generate(path, true);
+            generate(params, true);
             alpha = 0;
         }
 
@@ -70,17 +77,17 @@ class Heroe extends FlxSprite
         FlxTween.tween(this, {x: 0}, duration, {ease: FlxEase.quartOut});
     }
 
-    function generate(path:String, skipTrans:Bool = false)
+    function generate(params:HeroeParams, skipTrans:Bool = false)
     {
-        if(!FileSystem.exists(path)) 
+        if(!FileSystem.exists(params.imagePath)) 
         {
-            trace('Tried to regenerate but $path did not exist.');
+            trace('Tried to regenerate but ${params.imagePath} did not exist.');
             return;
         }
 
-        loadGraphic(path);
-        prevSpr.loadGraphic(path);
-        nextSpr.loadGraphic(path);
+        loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
+        prevSpr.loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
+        nextSpr.loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
 
         if(skipTrans)
         {
@@ -98,5 +105,15 @@ class Heroe extends FlxSprite
             FlxTween.tween(this, {"scale.x": 1.1, "scale.y": 1.1}, 1, {ease: FlxEase.quartOut});
             FlxTween.tween(this, {x: 50}, 10, {ease: FlxEase.smoothStepInOut, type: PINGPONG});
         }
+    }
+
+    public function fitToScreen()
+    {
+        setGraphicSize(FlxG.width * 1.1, FlxG.height * 1.1);
+        updateHitbox();
+        x = 0;
+        y = 0;
+        x -= ((FlxG.width * 1.1) - FlxG.width) / 2;
+        y -= ((FlxG.height * 1.1) - FlxG.height) / 2;
     }
 }

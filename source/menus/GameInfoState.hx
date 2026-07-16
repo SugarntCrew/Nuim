@@ -85,7 +85,11 @@ class GameInfoState extends Substate
 
         previewImage = new FlxSprite();
 
-        heroe = new Heroe(0, 0, Paths.image('games/heroes/${data.heroe_image}'), true);
+        var heroeParams:HeroeParams = {
+            imagePath: Paths.image('games/heroes/${data.heroe_image}'),
+            bitmapDataLoad: false
+        }
+        heroe = new Heroe(0, 0, heroeParams, true);
         add(heroe);
 
         backgroundGradient = new FlxSprite(0, 140);
@@ -355,7 +359,12 @@ class GameInfoState extends Substate
                         releaseText.text = '$releaseYear';
                     }
 
-                    // heroe?.regenImage(Paths.gamebananaAPIimage('cache/games/portal/$modId/image0'), true, true);
+                    var heroeParams:HeroeParams = {
+                        imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),
+                        bitmapDataLoad: true
+                    }
+                    heroe?.regenImage(heroeParams, true, true);
+                    heroe?.fitToScreen();
                     relocateHud();
 
                 case 'images_ready':
@@ -373,6 +382,13 @@ class GameInfoState extends Substate
                     downloadProgressBar.visible = false;
                     downloadProgressText.visible = false;
                     downloadProgressBG.visible = false;
+                    
+                    var heroeParams:HeroeParams = {
+                        imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),
+                        bitmapDataLoad: true
+                    }
+                    heroe?.regenImage(heroeParams, true, true);
+                    heroe?.fitToScreen();
                 case 'images_process':
                     downloadProgressBar.visible = true;
                     downloadProgressText.visible = true;
