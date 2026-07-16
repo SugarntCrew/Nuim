@@ -15,6 +15,7 @@ class Heroe extends FlxSprite
     public var regenTime:Float = 0.5;
     public var alreadyRegen:Bool = false;
     public var alphaTween:FlxTween;
+    public var posTween:FlxTween;
     public var blurShader:BlurShader;
     public var prevSpr:FlxSprite = null;
     public var nextSpr:FlxSprite = null;
@@ -62,6 +63,7 @@ class Heroe extends FlxSprite
     public function onEnterGame(params:HeroeParams, duration:Float)
     {
         if(alphaTween != null) alphaTween.cancel();
+        if(posTween != null) posTween.cancel();
 
         nextSpr.loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
         trace('${prevSpr.graphic} != ${nextSpr.graphic}');
@@ -103,7 +105,7 @@ class Heroe extends FlxSprite
 
             alphaTween = FlxTween.tween(this, {alpha: 1}, 1, {ease: FlxEase.quartOut, onComplete: (_) -> alphaTween = null});
             FlxTween.tween(this, {"scale.x": 1.1, "scale.y": 1.1}, 1, {ease: FlxEase.quartOut});
-            FlxTween.tween(this, {x: 50}, 10, {ease: FlxEase.smoothStepInOut, type: PINGPONG});
+            posTween = FlxTween.tween(this, {x: 50}, 10, {ease: FlxEase.smoothStepInOut, type: PINGPONG, onComplete: (_) -> posTween = null});
         }
     }
 

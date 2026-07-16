@@ -19,6 +19,7 @@ class ImagesDot extends FlxSpriteGroup
 class ImageDot extends FlxSprite
 {
     public var dotSelected:Bool = false;
+    public var updateAlpha:Bool = true;
     public function new(x:Float = 0, y:Float = 0)
     {
         super(x, y);
@@ -31,6 +32,6 @@ class ImageDot extends FlxSprite
         super.update(elapsed);
 
         var mult = FlxMath.lerp(alpha, dotSelected ? 1 : 0.4, elapsed * 10);
-        alpha = mult;
+        if(updateAlpha) alpha = mult;
     }
 }

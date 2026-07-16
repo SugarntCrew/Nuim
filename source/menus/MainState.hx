@@ -1,5 +1,7 @@
 package menus;
 
+import flixel.effects.FlxFlicker;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import ui.games.Heroe;
 
 class MainState extends State
@@ -15,6 +17,7 @@ class MainState extends State
     var boardBackground:FlxSprite;
     var heroeGradient:FlxSprite;
     var heroe:Heroe;
+    var gridsGrp:FlxTypedGroup<Grid>;
     var header:Header;
     var footer:Footer;
 
@@ -59,16 +62,21 @@ class MainState extends State
         heroeGradient.y = FlxG.height - heroeGradient.height;
         heroeGradient.blend = ADD;
         heroeGradient.scrollFactor.set(0, 0);
+        heroeGradient.alpha = 0;
         add(heroeGradient);
 
         board = new FlxSprite();
         board.loadGraphic(Paths.image('ui/board'));
         board.screenCenter(X);
         board.y = 183;
+        board.alpha = 0;
         add(board);
 
         boardBackground = new FlxSprite();
         add(boardBackground);
+
+        gridsGrp = new FlxTypedGroup<Grid>();
+        add(gridsGrp);
 
         var numX:Int = 0;
         var numY:Int = -1;
@@ -88,6 +96,10 @@ class MainState extends State
 
             grid.y = board.y + 40 + (numY * 480);
             grid.x = board.x + 35 + (numX * (grid.gridPixelSize + 35));
+            grid.ID = i;
+
+            grid.alpha = 0;
+            FlxTween.tween(grid, {alpha: 1}, 0.3, {startDelay: 0.15});
 
             grid.onClickCallback = function(data, ?behavior)
             {
@@ -102,12 +114,30 @@ class MainState extends State
                 FlxG.sound.play(Paths.sound('acceptSfx'));
                 
                 FlxTween.tween(footer, {y: FlxG.height}, 0.65, {ease: FlxEase.quartIn});
+
+                /*
                 FlxTween.tween(FlxG.camera, {zoom: 1.3}, 0.65, {ease: FlxEase.quartIn});
                 FlxTween.tween(bgTransition, {alpha: 1}, 0.65, {ease: FlxEase.quartIn, onComplete: function(twn:FlxTween)
                 {
                     trace('Opening substate!');
 
                     // TODO: Open substate with more info n metadata n cool stuff
+                    openSubState(new GameInfoState(data, gameInfoCam));
+                }});
+                */
+
+                FlxTween.tween(board, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+                FlxTween.tween(boardBackground, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+                gridsGrp.forEach(function(grid:Grid)
+                {
+                    grid.active = false;
+                    if(grid.ID == i) FlxFlicker.flicker(grid, 0.35, 0.05, false);
+                    else FlxTween.tween(grid, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+                });
+                FlxTween.tween(heroeGradient, {alpha: 0}, 0.65, {ease: FlxEase.quartOut, onComplete: function(twn:FlxTween)
+                {
+                    trace('Opening substate!');
+
                     openSubState(new GameInfoState(data, gameInfoCam));
                 }});
             }
@@ -133,7 +163,7 @@ class MainState extends State
                 }
             }
 
-            add(grid);
+            gridsGrp.add(grid);
 
             numX++;
         }
@@ -141,6 +171,7 @@ class MainState extends State
         boardBackground.makeGraphic(1572, Std.int(480 * totalGameRows) + 110, 0xFF000000);
         boardBackground.screenCenter(X);
         boardBackground.alpha = 0.45;
+        boardBackground.alpha = 0;
         boardBackground.y = board.y + board.height;
 
         header = new Header();
@@ -156,6 +187,8 @@ class MainState extends State
         bgTransition.alpha = 0;
         bgTransition.scrollFactor.set(0, 0);
         add(bgTransition);
+
+        fadeIn(false);
     }
 
     var timer:Float = 0;
@@ -202,5 +235,21 @@ class MainState extends State
         FlxTween.tween(footer, {y: FlxG.height - footer.height}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(FlxG.camera, {zoom: 1}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(bgTransition, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+        fadeIn(true);
+    }
+
+    function fadeIn(onDestroy:Bool)
+    {
+        FlxTween.tween(board, {alpha: 1}, 0.65, {ease: FlxEase.quartOut});
+        FlxTween.tween(boardBackground, {alpha: 0.45}, 0.65, {ease: FlxEase.quartOut});
+        gridsGrp.forEach(function(grid:Grid)
+        {
+            if(!onDestroy) return;
+            
+            grid.active = true;
+            grid.visible = true;
+            FlxTween.tween(grid, {alpha: 1}, 0.65, {ease: FlxEase.quartOut});
+        });
+        FlxTween.tween(heroeGradient, {alpha: 1}, 0.65, {ease: FlxEase.quartOut});
     }
 }

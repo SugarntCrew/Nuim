@@ -30,9 +30,14 @@ class PlayButton extends FlxSpriteGroup implements IClickable
 
     private var _onHover:Bool = false;
     private var _onUnhover:Bool = false;
+    public var alphaTarget:Float = 0;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
+
+        FlxTween.cancelTweensOf(playButtonBorder);
+        var mult = FlxMath.lerp(playButtonBorder.alpha, alphaTarget, elapsed * 14);
+        playButtonBorder.alpha = mult;
 
         if(FlxG.mouse.overlaps(playButton, refCamera))
         {
@@ -65,8 +70,9 @@ class PlayButton extends FlxSpriteGroup implements IClickable
     {
         Mouse.cursor = BUTTON;
 
-        FlxTween.cancelTweensOf(playButtonBorder);
-        FlxTween.tween(playButtonBorder, {alpha: 1}, 0.15, {ease: FlxEase.quartOut});
+        //FlxTween.cancelTweensOf(playButtonBorder);
+        //FlxTween.tween(playButtonBorder, {alpha: 1}, 0.15, {ease: FlxEase.quartOut});
+        alphaTarget = 1;
 
         if(onHoverCallback != null) onHoverCallback(data);
     }
@@ -80,8 +86,9 @@ class PlayButton extends FlxSpriteGroup implements IClickable
     {
         Mouse.cursor = ARROW;
 
-        FlxTween.cancelTweensOf(playButtonBorder);
-        FlxTween.tween(playButtonBorder, {alpha: 0}, 0.15, {ease: FlxEase.quartOut});
+        //FlxTween.cancelTweensOf(playButtonBorder);
+        //FlxTween.tween(playButtonBorder, {alpha: 0}, 0.15, {ease: FlxEase.quartOut});
+        alphaTarget = 0;
     }
     
     public function onClick(?customBehavior:Dynamic)

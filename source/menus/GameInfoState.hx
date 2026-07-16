@@ -94,34 +94,41 @@ class GameInfoState extends Substate
 
         backgroundGradient = new FlxSprite(0, 140);
         backgroundGradient.loadGraphic(Paths.image('ui/gameinfo/gradient'));
-        backgroundGradient.alpha = 0.65;
+        backgroundGradient.alpha = 0;
         add(backgroundGradient);
+
+        FlxTween.tween(backgroundGradient, {alpha: 0.65}, 0.6, {ease: FlxEase.quartOut});
 
         background = new FlxSprite();
         background.makeGraphic(FlxG.width, FlxG.height * 2, 0xFF000000);
         background.y = backgroundGradient.y + backgroundGradient.height;
-        background.alpha = 0.65;
+        background.alpha = 0;
         add(background);
+
+        FlxTween.tween(background, {alpha: 0.65}, 0.6, {ease: FlxEase.quartOut});
 
         line = new FlxSprite();
         line.makeGraphic(FlxG.width - 80, 2, 0xFF636363);
         line.x = 20;
         line.y = background.y - 1;
-        line.alpha = 0.7;
+        line.alpha = 0;
         add(line);
 
         titleText = new FlxText(0, 0, 0, data.name);
         titleText.setFormat(Paths.font('advent_pro'), 70, 0xFFFFFFFF, LEFT);
         titleText.x = line.x + 35;
         titleText.y = line.y - titleText.height - 5;
+        titleText.alpha = 0;
         add(titleText);
 
         gamebananaButton = new GamebananaButton(0, 0, data, camReference);
         gamebananaButton.x = FlxG.width - gamebananaButton.width - 60 - 35;
         gamebananaButton.y = line.y - gamebananaButton.height - 5;
         gamebananaButton.visible = gamebananaButton.active = hasGbLink;
+        gamebananaButton.alpha = 0;
         gamebananaButton.onClickCallback = function(data, ?customBehavior)
         {
+            if(!hasGbLink) return;
             FlxG.openURL(data.gamebanana_url);
         }
         add(gamebananaButton);
@@ -159,6 +166,7 @@ class GameInfoState extends Substate
             }
             process.close();
         }
+        playButton.alpha = 0;
         add(playButton);
 
         previewImage.x = line.x + 35;
@@ -168,7 +176,7 @@ class GameInfoState extends Substate
 
         downloadProgressBG = new FlxSprite();
         downloadProgressBG.makeGraphic(800, 100, 0xFF000000);
-        downloadProgressBG.alpha = 0.7;
+        downloadProgressBG.alpha = 0;
         downloadProgressBG.visible = false;
         add(downloadProgressBG);
 
@@ -176,12 +184,14 @@ class GameInfoState extends Substate
         downloadProgressText.setFormat(Paths.font('advent_pro'), 25, 0xFFFFFFFF, CENTER);
         downloadProgressText.y = playButton.y + playButton.height + 70;
         downloadProgressText.visible = false;
+        downloadProgressText.alpha = 0;
         add(downloadProgressText);
 
         downloadProgressBar = new FlxBar(0, 0, LEFT_TO_RIGHT, 750, 10, this, 'imageNum', 0, 100, false);
         downloadProgressBar.y = downloadProgressText.y + downloadProgressText.height + 20;
         downloadProgressBar.createFilledBar(0xFFA1A1A1, 0xFFE9E9E9);
         downloadProgressBar.visible = false;
+        downloadProgressBar.alpha = 0;
         add(downloadProgressBar);
 
         descriptionBackground = new FlxSprite();
@@ -189,88 +199,100 @@ class GameInfoState extends Substate
         descriptionBackground.alpha = 0.56;
         descriptionBackground.x = FlxG.width - 60 - descriptionBackground.width - 20;
         descriptionBackground.y = line.y + 20;
+        descriptionBackground.alpha = 0;
         add(descriptionBackground);
 
         var width:Float = descriptionBackground.x - (line.x + 35);
         downloadProgressText.x = line.x + 35 + width / 2 - downloadProgressText.width / 2;
         downloadProgressBar.x = line.x + 35 + width / 2 - downloadProgressBar.width / 2;
         downloadProgressBG.x = line.x + 35 + width / 2 - downloadProgressBG.width / 2;
+        downloadProgressBar.alpha = 0;
         downloadProgressBG.y = downloadProgressText.y - 25;
 
         descriptionTitleText = new FlxText(descriptionBackground.x + 10, descriptionBackground.y + 10, descriptionBackground.width - 20, 'Description', 16);
         descriptionTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        descriptionTitleText.alpha = 0;
         add(descriptionTitleText);
 
         descriptionLine = new FlxSprite();
         descriptionLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
         descriptionLine.x = descriptionBackground.x + 10;
         descriptionLine.y = descriptionTitleText.y + descriptionTitleText.height + 5;
-        descriptionLine.alpha = 0.7;
+        descriptionLine.alpha = 0;
         add(descriptionLine);
 
         descriptionText = new FlxText(descriptionBackground.x + 10, descriptionLine.y + 10, descriptionBackground.width - 20, data.description ?? 'No description provided.', 16);
         descriptionText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        descriptionText.alpha = 0;
         add(descriptionText);
 
         companyTitleText = new FlxText(descriptionBackground.x + 10, descriptionText.y + descriptionText.height + spacingFieldsY, descriptionBackground.width - 20, 'Company', 16);
         companyTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        companyTitleText.alpha = 0;
         add(companyTitleText);
 
         companyLine = new FlxSprite();
         companyLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
         companyLine.x = descriptionBackground.x + 10;
         companyLine.y = companyTitleText.y + companyTitleText.height + 5;
-        companyLine.alpha = 0.7;
+        companyLine.alpha = 0;
         add(companyLine);
 
         var companyTxt:String = 'Developed by ${data.developer ?? 'Unknown'}\nPublished by ${data.publisher ?? 'Unknown'}';
         companyText = new FlxText(descriptionBackground.x + 10, companyLine.y + 10, descriptionBackground.width - 20, companyTxt, 16);
         companyText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        companyText.alpha = 0;
         add(companyText);
 
         genreTitleText = new FlxText(descriptionBackground.x + 10, companyText.y + companyText.height + spacingFieldsY, descriptionBackground.width - 20, 'Genre', 16);
         genreTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        genreTitleText.alpha = 0;
         add(genreTitleText);
 
         genreLine = new FlxSprite();
         genreLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
         genreLine.x = descriptionBackground.x + 10;
         genreLine.y = genreTitleText.y + genreTitleText.height + 5;
-        genreLine.alpha = 0.7;
+        genreLine.alpha = 0;
         add(genreLine);
 
         genreText = new FlxText(descriptionBackground.x + 10, genreLine.y + 10, descriptionBackground.width - 20, data.genre ?? 'Unknown', 16);
         genreText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        genreText.alpha = 0;
         add(genreText);
 
         releaseTitleText = new FlxText(descriptionBackground.x + 10, genreText.y + genreText.height + spacingFieldsY, descriptionBackground.width - 20, 'Release', 16);
         releaseTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        releaseTitleText.alpha = 0;
         add(releaseTitleText);
 
         releaseLine = new FlxSprite();
         releaseLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
         releaseLine.x = descriptionBackground.x + 10;
         releaseLine.y = releaseTitleText.y + releaseTitleText.height + 5;
-        releaseLine.alpha = 0.7;
+        releaseLine.alpha = 0;
         add(releaseLine);
 
         releaseText = new FlxText(descriptionBackground.x + 10, releaseLine.y + 10, descriptionBackground.width - 20, data.release ?? 'Unknown', 16);
         releaseText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        releaseText.alpha = 0;
         add(releaseText);
 
         versionTitleText = new FlxText(descriptionBackground.x + 10, releaseText.y + releaseText.height + spacingFieldsY, descriptionBackground.width - 20, 'Version', 16);
         versionTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
+        versionTitleText.alpha = 0;
         add(versionTitleText);
 
         versionLine = new FlxSprite();
         versionLine.makeGraphic(Std.int(descriptionBackground.width - 20), 2, 0xFF636363);
         versionLine.x = descriptionBackground.x + 10;
         versionLine.y = versionTitleText.y + versionTitleText.height + 5;
-        versionLine.alpha = 0.7;
+        versionLine.alpha = 0;
         add(versionLine);
 
         versionText = new FlxText(descriptionBackground.x + 10, versionLine.y + 10, descriptionBackground.width - 20, data.version ?? 'Unknown', 16);
         versionText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        versionText.alpha = 0;
         add(versionText);
         
         header = new Header();
@@ -282,8 +304,79 @@ class GameInfoState extends Substate
             requestModDataGamebanana([NAME, DESCRIPTION, SUBTITLE, VERSION, DATE_ADDED, DATE_MODIFIED, IMAGES, FILES, VIEWS, LIKES, POSTS]);
             installPortalImages();
         }
+        else
+        {
+            uiTransition();
+        }
 
         camera = FlxG.cameras.list[FlxG.cameras.list.length - 1];
+    }
+    
+    function uiTransition(transIn:Bool = true, ?finishCallback:(twn:FlxTween)->Void)
+    {
+        var duration:Float = 0.6;
+        if(transIn)
+        {
+            FlxTween.tween(line, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(titleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(gamebananaButton, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(playButton, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(downloadProgressBG, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(downloadProgressText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(downloadProgressBar, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(descriptionTitleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(descriptionLine, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(descriptionText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(companyTitleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(companyLine, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(companyText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(genreTitleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(genreLine, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(genreText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(releaseTitleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(releaseLine, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(releaseText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(versionTitleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(versionLine, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(versionText, {alpha: 1}, duration, {ease: FlxEase.quadOut, onComplete: finishCallback ?? function(twn:FlxTween) {}});
+        }
+        else
+        {
+            FlxTween.tween(line, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(titleText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(gamebananaButton, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(playButton, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(downloadProgressBG, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(downloadProgressText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(downloadProgressBar, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(descriptionTitleText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(descriptionLine, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(descriptionText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(companyTitleText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(companyLine, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(companyText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(genreTitleText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(genreLine, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(genreText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(releaseTitleText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(releaseLine, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(releaseText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(versionTitleText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(versionLine, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(versionText, {alpha: 0}, duration, {ease: FlxEase.quadOut, onComplete: finishCallback ?? function(twn:FlxTween) {}});
+
+            FlxTween.tween(previewImage, {alpha: 0}, duration, {ease: FlxEase.quartOut});
+            if(previewImageDotsGrp != null)
+            {
+                for(obj in previewImageDotsGrp.members)
+                {
+                    var castedObj = cast(obj, ImageDot);
+                    castedObj.dotSelected = false;
+                    castedObj.updateAlpha = false;
+                    FlxTween.tween(castedObj, {alpha: 0}, duration, {ease: FlxEase.quartOut});
+                }
+            }
+        }
     }
 
     var targetScrollY:Float = 0;
@@ -366,6 +459,7 @@ class GameInfoState extends Substate
                     heroe?.regenImage(heroeParams, true, true);
                     heroe?.fitToScreen();
                     relocateHud();
+                    uiTransition();
 
                 case 'images_ready':
                     modId = msg.modId;
@@ -436,7 +530,9 @@ class GameInfoState extends Substate
     {
         trace('Going back to main!');
         FlxG.sound.play(Paths.sound('backSfx'));
-        close();
+        //close();
+
+        uiTransition(false, function(twn:FlxTween) { close(); });
     }
 
     var main:Thread;
