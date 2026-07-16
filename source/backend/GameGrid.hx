@@ -61,6 +61,11 @@ class GameGrid
             name: "Infected Beats",
             game_location: "",
             gamebanana_url: 'https://gamebanana.com/mods/473596'
+        },
+        {
+            name: "Springfunked",
+            game_location: "",
+            gamebanana_url: 'https://gamebanana.com/mods/615034'
         }
     ];
 }
