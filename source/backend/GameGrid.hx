@@ -56,6 +56,11 @@ class GameGrid
         {
             name: "My Hero Academia",
             game_location: ""
+        },
+        {
+            name: "Infected Beats",
+            game_location: "",
+            gamebanana_url: 'https://gamebanana.com/mods/473596'
         }
     ];
 }
