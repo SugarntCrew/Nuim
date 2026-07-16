@@ -273,6 +273,7 @@ class GameInfoState extends Substate
 
         if(hasGbLink) 
         {
+            requestModDataGamebanana([NAME, DESCRIPTION]);
             installPortalImages();
         }
 
@@ -332,6 +333,13 @@ class GameInfoState extends Substate
             if(!subAlive) break;
             switch(msg.type)
             {
+                case 'metadata_ready':
+
+                    trace(msg.modId, msg.name, msg.description);
+
+                    titleText.text = msg.name ?? data.name;
+                    descriptionText.text = msg.description ?? (data.description ?? 'No description provided.');
+
                 case 'images_ready':
                     modId = msg.modId;
                     imageNum = msg.imageNum;
@@ -404,7 +412,7 @@ class GameInfoState extends Substate
             var localImageNum:Int = 0;
             GamebananaAPI.requestData(data.gamebanana_url, [IMAGES], function(apiData, id)
             {
-                trace(apiData);
+                // trace(apiData);
                 var images = apiData._aPreviewMedia._aImages;
                 for(num => image in cast(images, Array<Dynamic>))
                 {
@@ -433,6 +441,21 @@ class GameInfoState extends Substate
                     });
                 }
                 //reloadImages('image$curSelectedImage');
+            });
+        });
+    }
+
+    function requestModDataGamebanana(propierties:Array<GamebananaPropierties>)
+    {
+        Thread.create(() -> {
+            GamebananaAPI.requestData(data.gamebanana_url, propierties, function(apiData, id)
+            {
+                main.sendMessage({
+                    type: 'metadata_ready',
+                    modId: id,
+                    name: apiData._sName,
+                    description: apiData._sDescription
+                });
             });
         });
     }
