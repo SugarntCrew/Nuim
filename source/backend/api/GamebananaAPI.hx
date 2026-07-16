@@ -10,8 +10,16 @@ import haxe.Http;
 enum GamebananaPropierties
 {
     NAME;
+    SUBTITLE;
     DESCRIPTION;
+    VERSION;
+    DATE_ADDED;
+    DATE_MODIFIED;
     IMAGES;
+    FILES;
+    VIEWS;
+    LIKES;
+    POSTS;
 }
 
 class GamebananaAPI
@@ -48,8 +56,16 @@ class GamebananaAPI
             switch(prop)
             {
                 case NAME: strProp += '_sName';
-                case DESCRIPTION: strProp += '_sDescription';
+                case SUBTITLE: strProp += '_sDescription';
+                case DESCRIPTION: strProp += '_sText';
+                case DATE_ADDED: strProp += '_tsDateAdded';
+                case DATE_MODIFIED: strProp += '_tsDateModified';
                 case IMAGES: strProp += '_aPreviewMedia';
+                case FILES: strProp += '_aFiles';
+                case VIEWS: strProp += '_nViewCount';
+                case LIKES: strProp += '_nLikeCount';
+                case POSTS: strProp += '_nPostCount';
+                case VERSION: strProp += '_sVersion';
             }
 
             if(num < propierties.length - 1) strProp += ',';
@@ -108,7 +124,15 @@ class GamebananaAPI
                     type: 'metadata_ready',
                     modId: id,
                     name: apiData._sName,
-                    description: apiData._sDescription
+                    subtitle: apiData._sDescription,
+                    description: apiData._sText,
+                    date_added: apiData._tsDateAdded,
+                    date_modified: apiData._tsDateModified,
+                    files: apiData._aFiles,
+                    views: apiData._nViewCount,
+                    likes: apiData._nLikeCount,
+                    posts: apiData._nPostCount,
+                    version: apiData._sVersion
                 });
             });
         });

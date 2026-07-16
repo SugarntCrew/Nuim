@@ -103,4 +103,9 @@ class DateUtils
 
         return '$hour:$minutes';
     }
+
+    public static function convertMsToDate(ms:Float):Date
+    {
+        return Date.fromTime(ms * 1000);
+    }
 }

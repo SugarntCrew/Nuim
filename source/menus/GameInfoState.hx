@@ -1,5 +1,7 @@
 package menus;
 
+import ui.header.DateText;
+import backend.DateUtils;
 import flixel.ui.FlxBar;
 import sys.thread.Thread;
 import backend.Constants;
@@ -273,7 +275,7 @@ class GameInfoState extends Substate
 
         if(hasGbLink) 
         {
-            requestModDataGamebanana([NAME, DESCRIPTION]);
+            requestModDataGamebanana([NAME, DESCRIPTION, SUBTITLE, VERSION, DATE_ADDED, DATE_MODIFIED, IMAGES, FILES, VIEWS, LIKES, POSTS]);
             installPortalImages();
         }
 
@@ -339,6 +341,22 @@ class GameInfoState extends Substate
 
                     titleText.text = msg.name ?? data.name;
                     descriptionText.text = msg.description ?? (data.description ?? 'No description provided.');
+                    versionText.text = (msg.version == '' ? 'Unknown' : msg.version) ?? (data.version ?? 'Unknown');
+                    
+                    var releaseDate = msg.date_added ?? (data.release ?? 'Unknown');
+                    if(releaseDate != null)
+                    {
+                        trace('Release date is $releaseDate');
+                        var convertRelease = DateUtils.convertMsToDate(Std.parseFloat(releaseDate));
+                        trace('Release date converted is ${convertRelease}');
+                        var releaseYear = convertRelease.getFullYear();
+                        trace('Year = $releaseYear');
+
+                        releaseText.text = '$releaseYear';
+                    }
+
+                    // heroe?.regenImage(Paths.gamebananaAPIimage('cache/games/portal/$modId/image0'), true, true);
+                    relocateHud();
 
                 case 'images_ready':
                     modId = msg.modId;
@@ -486,5 +504,57 @@ class GameInfoState extends Substate
     {
         subAlive = false;
         super.destroy();
+    }
+
+    function relocateHud()
+    {
+        // description
+        descriptionLine.y = descriptionTitleText.y + descriptionTitleText.height + 5;
+        descriptionText.y = descriptionLine.y + 10;
+
+        // company
+        companyTitleText.y = descriptionText.y + descriptionText.height + spacingFieldsY;
+        companyLine.y = companyTitleText.y + companyTitleText.height + 5;
+        companyText.y = companyLine.y + 10;
+
+        // genre
+        genreTitleText.y = companyText.y + companyText.height + spacingFieldsY;
+        genreLine.y = genreTitleText.y + genreTitleText.height + 5;
+        genreText.y = genreLine.y + 10;
+
+        // release
+        releaseTitleText.y = genreText.y + genreText.height + spacingFieldsY;
+        releaseLine.y = releaseTitleText.y + releaseTitleText.height + 5;
+        releaseText.y = releaseLine.y + 10;
+
+        // version
+        versionTitleText.y = releaseText.y + releaseText.height + spacingFieldsY;
+        versionLine.y = versionTitleText.y + versionTitleText.height + 5;
+        versionText.y = versionLine.y + 10;
+
+        // preview image (keeps centered in the available space)
+        if(previewImage != null)
+        {
+            var width:Float = descriptionBackground.x - (line.x + 35);
+            previewImage.x = line.x + 35 + width / 2 - previewImage.width / 2;
+        }
+
+        // image dots
+        if(previewImageDotsGrp != null)
+        {
+            previewImageDotsGrp.x = previewImage.x + previewImage.width / 2 - previewImageDotsGrp.width / 2;
+            previewImageDotsGrp.y = previewImage.y + previewImage.height + 20;
+        }
+
+        // download progress
+        var width:Float = descriptionBackground.x - (line.x + 35);
+
+        downloadProgressText.x = line.x + 35 + width / 2 - downloadProgressText.width / 2;
+        downloadProgressBar.x = line.x + 35 + width / 2 - downloadProgressBar.width / 2;
+        downloadProgressBG.x = line.x + 35 + width / 2 - downloadProgressBG.width / 2;
+
+        downloadProgressText.y = playButton.y + playButton.height + 70;
+        downloadProgressBar.y = downloadProgressText.y + downloadProgressText.height + 20;
+        downloadProgressBG.y = downloadProgressText.y - 25;
     }
 }

@@ -50,7 +50,7 @@ class MainState extends State
         colorBG.scrollFactor.set(0, 0);
         add(colorBG);
 
-        heroe = new Heroe(0, 0, 'JFAKSDJGFASKLGJASKLGJASKLGJAKLSJGLKJASG');
+        heroe = new Heroe(0, 0, null);
         add(heroe);
 
         heroeGradient = new FlxSprite();
