@@ -1,5 +1,6 @@
 package menus;
 
+import flixel.ui.FlxBar;
 import sys.thread.Thread;
 import backend.Constants;
 import sys.io.Process;
@@ -33,6 +34,9 @@ class GameInfoState extends Substate
 
     var previewImage:FlxSprite;
     var previewImageDotsGrp:ImagesDot;
+    var downloadProgressBG:FlxSprite;
+    var downloadProgressText:FlxText;
+    var downloadProgressBar:FlxBar;
 
     var descriptionBackground:FlxSprite;
     var descriptionTitleText:FlxText;
@@ -156,12 +160,36 @@ class GameInfoState extends Substate
         previewImage.visible = false;
         add(previewImage);
 
+        downloadProgressBG = new FlxSprite();
+        downloadProgressBG.makeGraphic(800, 100, 0xFF000000);
+        downloadProgressBG.alpha = 0.7;
+        downloadProgressBG.visible = false;
+        add(downloadProgressBG);
+
+        downloadProgressText = new FlxText(0, 0, 750, 'Downloading metadata from GameBanana (0/?)', 25);
+        downloadProgressText.setFormat(Paths.font('advent_pro'), 25, 0xFFFFFFFF, CENTER);
+        downloadProgressText.y = playButton.y + playButton.height + 70;
+        downloadProgressText.visible = false;
+        add(downloadProgressText);
+
+        downloadProgressBar = new FlxBar(0, 0, LEFT_TO_RIGHT, 750, 10, this, 'imageNum', 0, 100, false);
+        downloadProgressBar.y = downloadProgressText.y + downloadProgressText.height + 20;
+        downloadProgressBar.createFilledBar(0xFFA1A1A1, 0xFFE9E9E9);
+        downloadProgressBar.visible = false;
+        add(downloadProgressBar);
+
         descriptionBackground = new FlxSprite();
         descriptionBackground.makeGraphic(800, FlxG.height, 0xFF000000);
         descriptionBackground.alpha = 0.56;
         descriptionBackground.x = FlxG.width - 60 - descriptionBackground.width - 20;
         descriptionBackground.y = line.y + 20;
         add(descriptionBackground);
+
+        var width:Float = descriptionBackground.x - (line.x + 35);
+        downloadProgressText.x = line.x + 35 + width / 2 - downloadProgressText.width / 2;
+        downloadProgressBar.x = line.x + 35 + width / 2 - downloadProgressBar.width / 2;
+        downloadProgressBG.x = line.x + 35 + width / 2 - downloadProgressBG.width / 2;
+        downloadProgressBG.y = downloadProgressText.y - 25;
 
         descriptionTitleText = new FlxText(descriptionBackground.x + 10, descriptionBackground.y + 10, descriptionBackground.width - 20, 'Description', 16);
         descriptionTitleText.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, LEFT);
@@ -315,6 +343,19 @@ class GameInfoState extends Substate
                     previewImageDotsGrp.x = previewImage.x + previewImage.width / 2 - previewImageDotsGrp.width / 2;
                     previewImageDotsGrp.y = previewImage.y + previewImage.height + 20;
                     add(previewImageDotsGrp);
+
+                    downloadProgressBar.visible = false;
+                    downloadProgressText.visible = false;
+                    downloadProgressBG.visible = false;
+                case 'images_process':
+                    downloadProgressBar.visible = true;
+                    downloadProgressText.visible = true;
+                    downloadProgressBG.visible = true;
+
+                    downloadProgressBar.setRange(0, Std.parseInt(msg.imagesTotal));
+                    imageNum = msg.imagesDownloaded;
+
+                    downloadProgressText.text = 'Downloading images from GameBanana (${msg.imagesDownloaded}/${msg.imagesTotal})';
                 default:
             }
 
@@ -371,6 +412,15 @@ class GameInfoState extends Substate
                     trace(imageUrl);
                     GamebananaAPI.saveImageFromURL(imageUrl, id, 'image$num');
                     localImageNum++;
+
+                    if(subAlive)
+                    {
+                        main.sendMessage({
+                            type: 'images_process',
+                            imagesDownloaded: localImageNum,
+                            imagesTotal: images.length
+                        });
+                    }
                 }
 
                 trace('Finished! Reloading images...');

@@ -55,6 +55,7 @@ class Grid extends FlxSpriteGroup implements IClickable
 
         gridImageBlur.loadGraphic(Paths.image('games/grids/blur'));
         gridImageBlur.x += (gridImage.width / 2) - (gridImageBlur.width / 2);
+        gridImageBlur.offset.set(0, 40);
 
         add(gridImageBlur);
         add(gridImage);
