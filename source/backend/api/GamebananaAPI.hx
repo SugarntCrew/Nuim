@@ -1,5 +1,6 @@
 package backend.api;
 
+import menus.GameInfoState;
 import sys.thread.Thread;
 import haxe.Json;
 import sys.FileSystem;
@@ -64,5 +65,52 @@ class GamebananaAPI
         }
 
         http.request(false);
+    }
+
+    public static function fetchImages(modUrl:String, mainThread:Thread)
+    {
+        Thread.create(() -> {
+            var localImageNum:Int = 0;
+            requestData(modUrl, [IMAGES], function(apiData, id)
+            {
+                var images = apiData._aPreviewMedia._aImages;
+                for(num => image in cast(images, Array<Dynamic>))
+                {
+                    var imageUrl = '${image._sBaseUrl}/${image._sFile}';
+                    trace(imageUrl);
+                    GamebananaAPI.saveImageFromURL(imageUrl, id, 'image$num');
+                    localImageNum++;
+
+                    mainThread?.sendMessage({
+                        type: 'images_process',
+                        imagesDownloaded: localImageNum,
+                        imagesTotal: images.length
+                    });
+                }
+
+                trace('Finished! Reloading images...');
+
+                mainThread?.sendMessage({
+                    type: 'images_ready',
+                    modId: id,
+                    imageNum: localImageNum
+                });
+            });
+        });
+    }
+
+    public static function fetchData(modUrl:String, propierties:Array<GamebananaPropierties>, mainThread:Thread)
+    {
+        Thread.create(() -> {
+            requestData(modUrl, propierties, function(apiData, id)
+            {
+                mainThread?.sendMessage({
+                    type: 'metadata_ready',
+                    modId: id,
+                    name: apiData._sName,
+                    description: apiData._sDescription
+                });
+            });
+        });
     }
 }

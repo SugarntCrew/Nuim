@@ -408,6 +408,9 @@ class GameInfoState extends Substate
     var main:Thread;
     function installPortalImages()
     {
+        GamebananaAPI.fetchImages(data.gamebanana_url, main);
+
+        /*
         Thread.create(() -> {
             var localImageNum:Int = 0;
             GamebananaAPI.requestData(data.gamebanana_url, [IMAGES], function(apiData, id)
@@ -443,10 +446,12 @@ class GameInfoState extends Substate
                 //reloadImages('image$curSelectedImage');
             });
         });
+        */
     }
 
     function requestModDataGamebanana(propierties:Array<GamebananaPropierties>)
     {
+        /*
         Thread.create(() -> {
             GamebananaAPI.requestData(data.gamebanana_url, propierties, function(apiData, id)
             {
@@ -458,6 +463,9 @@ class GameInfoState extends Substate
                 });
             });
         });
+        */
+
+        GamebananaAPI.fetchData(data.gamebanana_url, propierties, main);
     }
 
     function reloadImages(image:String)
