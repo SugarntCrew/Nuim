@@ -26,7 +26,7 @@ class Grid extends FlxSpriteGroup implements IClickable
 
         data = _data;
         gridName = _data.name ?? '';
-        gridImageName = _data.grid_image ?? 'FJASKLGJASKLGJASLKGJASKLGJASLKGJASKLGJASKLGJASGJASKGJALSKG'; //idk whatever
+        gridImageName = _data.grid_image ?? 'heynully'; //idk whatever
 
         gridImageBlur = new FlxSprite();
         gridImage = new FlxSprite();

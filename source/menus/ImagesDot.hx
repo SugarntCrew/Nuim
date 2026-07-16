@@ -11,6 +11,8 @@ class ImagesDot extends FlxSpriteGroup
             var dot = new ImageDot();
             dot.x += (25 * i);
             dot.ID = i;
+            dot.updateAlpha = false;
+            dot.alpha = 0;
             add(dot);
         }
     }

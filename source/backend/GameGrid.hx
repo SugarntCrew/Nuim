@@ -66,6 +66,13 @@ class GameGrid
             name: "Springfunked",
             game_location: "",
             gamebanana_url: 'https://gamebanana.com/mods/615034'
+        },
+        {
+            name: "Prange Guy",
+            game_location: "",
+            grid_image: 'prange',
+            heroe_image: 'prange',
+            gamebanana_url: 'https://gamebanana.com/mods/693558',
         }
     ];
 }
