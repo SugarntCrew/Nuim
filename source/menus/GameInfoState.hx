@@ -451,6 +451,11 @@ class GameInfoState extends Substate
                     relocateHud();
                     uiTransition();
 
+                case 'heroe_download':
+
+                    downloadProgressBar.visible = false;
+                    downloadProgressText.text = 'Downloading heroe (${msg.modId})';
+
                 case 'images_ready':
                     modId = msg.modId;
                     imageNum = msg.imageNum;
@@ -528,7 +533,11 @@ class GameInfoState extends Substate
     var main:Thread;
     function installPortalImages()
     {
-        GamebananaAPI.fetchImages(data.gamebanana_url, main);
+        var downloadParams:HeroeDownloadParams = {
+            download: true,
+            replace: false
+        }
+        GamebananaAPI.fetchImages(data.gamebanana_url, main, downloadParams);
 
         /*
         Thread.create(() -> {

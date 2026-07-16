@@ -1,5 +1,6 @@
 package backend.api;
 
+import ui.games.Heroe.HeroeParams;
 import menus.GameInfoState;
 import sys.thread.Thread;
 import haxe.Json;
@@ -22,19 +23,26 @@ enum GamebananaPropierties
     POSTS;
 }
 
+typedef HeroeDownloadParams =
+{
+    var download:Bool;
+    var replace:Bool;
+}
+
 class GamebananaAPI
 {
-    public static function saveImageFromURL(imageurl:String, modId:String, fileName:String)
+    public static function saveImageFromURL(imageurl:String, modId:String, path:String)
     {
-        if(FileSystem.exists(Paths.gamebananaAPIimage('cache/games/portal/$modId/$fileName'))) return;
-        trace('Did not find ${Paths.gamebananaAPIimage('cache/games/portal/$modId/$fileName')}. Downloading from GameBanana...');
+        if(FileSystem.exists(Paths.gamebananaAPIimage(path))) return;
+        trace('Did not find ${Paths.gamebananaAPIimage(path)}. Downloading from GameBanana...');
         
         var http = new Http(imageurl);
         http.onBytes = function(bytes)
         {
             if(!FileSystem.exists('assets/images/cache/games/portal/$modId')) FileSystem.createDirectory('assets/images/cache/games/portal/$modId');
+            if(!FileSystem.exists('assets/images/games/heroes')) FileSystem.createDirectory('assets/images/games/heroes');
 
-            File.saveBytes(Paths.gamebananaAPIimage('cache/games/portal/$modId/$fileName'), bytes);
+            File.saveBytes(Paths.gamebananaAPIimage(path), bytes);
         }
 
         http.onError = function(error)
@@ -83,10 +91,12 @@ class GamebananaAPI
         http.request(false);
     }
 
-    public static function fetchImages(modUrl:String, mainThread:Thread)
+    public static function fetchImages(modUrl:String, mainThread:Thread, ?heroeDownloadParams:HeroeDownloadParams)
     {
         Thread.create(() -> {
             var localImageNum:Int = 0;
+            var heroeUrl:String = '';
+            var targetHeroeIndex:Int = 0;
             requestData(modUrl, [IMAGES], function(apiData, id)
             {
                 var images = apiData._aPreviewMedia._aImages;
@@ -94,14 +104,28 @@ class GamebananaAPI
                 {
                     var imageUrl = '${image._sBaseUrl}/${image._sFile}';
                     trace(imageUrl);
-                    GamebananaAPI.saveImageFromURL(imageUrl, id, 'image$num');
+                    GamebananaAPI.saveImageFromURL(imageUrl, id, 'cache/games/portal/$id/image$num');
                     localImageNum++;
+
+                    if(num == targetHeroeIndex) heroeUrl = imageUrl;
 
                     mainThread?.sendMessage({
                         type: 'images_process',
                         imagesDownloaded: localImageNum,
                         imagesTotal: images.length
                     });
+                }
+
+                if(heroeDownloadParams.download) 
+                {
+                    if(FileSystem.exists('assets/images/games/heroes/${id}_heroe') && !heroeDownloadParams.replace) return;
+                    
+                    mainThread?.sendMessage({
+                        type: 'heroe_download',
+                        modId: id
+                    });
+
+                    GamebananaAPI.saveImageFromURL(heroeUrl, id, 'games/heroes/${id}_heroe');
                 }
 
                 trace('Finished! Reloading images...');
