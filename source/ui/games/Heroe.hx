@@ -8,6 +8,7 @@ typedef HeroeParams =
 {
     var imagePath:String;
     var bitmapDataLoad:Bool;
+    var apiPath:String;
 }
 
 class Heroe extends FlxSprite
@@ -17,15 +18,12 @@ class Heroe extends FlxSprite
     public var alphaTween:FlxTween;
     public var posTween:FlxTween;
     public var blurShader:BlurShader;
-    public var prevSpr:FlxSprite = null;
-    public var nextSpr:FlxSprite = null;
+    public var useApiPath:Bool = false;
+    var currentHeroPath:String = null;
     
     public function new(x:Float, y:Float, params:HeroeParams, ?skipEntire:Bool = false)
     {
         super(x, y);
-
-        prevSpr = new FlxSprite();
-        nextSpr = new FlxSprite();
 
         regenImage(params, true, skipEntire);
         color = 0xFF929292;
@@ -40,8 +38,16 @@ class Heroe extends FlxSprite
 
     public function regenImage(params:HeroeParams, ?skipOutTrans:Bool = false, ?skipEntire:Bool = false)
     {
-        nextSpr.loadGraphic(((params?.bitmapDataLoad ?? false) ? BitmapData.fromFile(params?.imagePath) : params?.imagePath) ?? Paths.image('games/heroes/template'));
-        if(prevSpr.graphic == nextSpr.graphic) return; // lmao
+        var targetPath = params?.apiPath;
+        var bitmapDataLoad = true;
+        if(!FileSystem.exists(targetPath)) 
+        {
+            targetPath = params?.imagePath;
+            bitmapDataLoad = params?.bitmapDataLoad;
+        }
+        
+        if (currentHeroPath == targetPath) return;
+        currentHeroPath = targetPath;
 
         alreadyRegen = true;
 
@@ -65,57 +71,98 @@ class Heroe extends FlxSprite
         if(alphaTween != null) alphaTween.cancel();
         if(posTween != null) posTween.cancel();
 
-        nextSpr.loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
-        trace('${prevSpr.graphic} != ${nextSpr.graphic}');
-
-        if(prevSpr.graphic != nextSpr.graphic) 
+        var targetPath = params?.apiPath;
+        var bitmapDataLoad = true;
+        if(!FileSystem.exists(targetPath)) 
         {
+            targetPath = params?.imagePath;
+            bitmapDataLoad = params?.bitmapDataLoad;
+        }
+
+        if(currentHeroPath != targetPath) 
+        {
+            currentHeroPath = targetPath;
             generate(params, true);
             alpha = 0;
         }
 
 
         alphaTween = FlxTween.tween(this, {alpha: 1}, duration, {ease: FlxEase.quartOut, onComplete: (_) -> alphaTween = null});
-        FlxTween.tween(this, {x: 0}, duration, {ease: FlxEase.quartOut});
+        FlxTween.tween(this, {x: targetX}, duration, {ease: FlxEase.quartOut});
     }
 
     function generate(params:HeroeParams, skipTrans:Bool = false)
     {
-        if(!FileSystem.exists(params.imagePath)) 
+        if(!FileSystem.exists(params?.imagePath) && !FileSystem.exists(params?.apiPath)) 
         {
-            trace('Tried to regenerate but ${params.imagePath} did not exist.');
-            return;
-        }
+            trace('Tried to regenerate but ${params?.imagePath} or ${params?.apiPath} did not exist.');
+            trace('Loading template >:)');
+            //return;
 
-        loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
-        prevSpr.loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
-        nextSpr.loadGraphic(params.bitmapDataLoad ? BitmapData.fromFile(params.imagePath) : params.imagePath);
+            loadGraphic(Paths.image('games/heroes/template'));
+        }
+        else
+        {
+            var targetPath = params?.apiPath;
+            var bitmapDataLoad = true;
+            useApiPath = true;
+            if(!FileSystem.exists(targetPath)) 
+            {
+                targetPath = params?.imagePath;
+                bitmapDataLoad = params?.bitmapDataLoad;
+                useApiPath = false;
+            }
+            loadGraphic(((bitmapDataLoad ?? false) ? BitmapData.fromFile(targetPath) : targetPath) ?? Paths.image('games/heroes/template'));
+        }
 
         if(skipTrans)
         {
+            fitToScreen();
             x = 0;
             scale.set(1.1, 1.1);
+
+            if(useApiPath) setGraphicSize(FlxG.width * 1.1, FlxG.height * 1.1);
         }
         else
         {
             FlxTween.cancelTweensOf(this);
             
+            fitToScreen();
             x = 0;
             scale.set(1.2, 1.2);
 
             alphaTween = FlxTween.tween(this, {alpha: 1}, 1, {ease: FlxEase.quartOut, onComplete: (_) -> alphaTween = null});
-            FlxTween.tween(this, {"scale.x": 1.1, "scale.y": 1.1}, 1, {ease: FlxEase.quartOut});
-            posTween = FlxTween.tween(this, {x: 50}, 10, {ease: FlxEase.smoothStepInOut, type: PINGPONG, onComplete: (_) -> posTween = null});
+            if(useApiPath)
+            {
+                FlxTween.num(FlxG.width * 1.2, FlxG.width * 1.1, 1, {ease: FlxEase.quartOut, onComplete: startPosTween}, function(v:Float)
+                {
+                    fitToScreen(v, v / 1.7777777);
+                });
+            }
+            else
+            {
+                FlxTween.tween(this, {"scale.x": 1.1, "scale.y": 1.1}, 1, {ease: FlxEase.quartOut, onComplete: startPosTween});
+            }
         }
     }
 
-    public function fitToScreen()
+    public function startPosTween(?twn:FlxTween)
     {
-        setGraphicSize(FlxG.width * 1.1, FlxG.height * 1.1);
+        posTween = FlxTween.tween(this, {x: x + 50}, 10, {ease: FlxEase.smoothStepInOut, type: PINGPONG, onComplete: (_) -> posTween = null});
+    }
+
+    public var targetX:Float = 0;
+    public function fitToScreen(?customValueWidth:Float, ?customValueHeight:Float)
+    {
+        if(customValueWidth == null) customValueWidth = FlxG.width * 1.1;
+        if(customValueHeight == null) customValueHeight = FlxG.height * 1.1;
+
+        setGraphicSize(customValueWidth, customValueHeight);
         updateHitbox();
         x = 0;
         y = 0;
-        x -= ((FlxG.width * 1.1) - FlxG.width) / 2;
-        y -= ((FlxG.height * 1.1) - FlxG.height) / 2;
+        x -= ((customValueWidth) - FlxG.width) / 2;
+        y -= ((customValueHeight) - FlxG.height) / 2;
+        targetX = x;
     }
 }

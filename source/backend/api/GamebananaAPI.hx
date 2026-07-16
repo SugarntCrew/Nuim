@@ -56,7 +56,7 @@ class GamebananaAPI
     public static function requestData(modUrl:String, propierties:Array<GamebananaPropierties>, callback:(data:Dynamic, modID:String)->Void)
     {
         var modId:String = modUrl.substr(modUrl.length - 6, modUrl.length);
-        trace(modId);
+        // trace(modId);
 
         var strProp:String = '';
         for(num => prop in propierties)
@@ -80,7 +80,7 @@ class GamebananaAPI
         }
 
         var apiImagesLink:String = 'https://gamebanana.com/apiv11/Mod/$modId?_csvProperties=$strProp';
-        trace(apiImagesLink);
+        //trace(apiImagesLink);
         var http = new Http(apiImagesLink);
         http.onData = function(data)
         {
@@ -103,7 +103,7 @@ class GamebananaAPI
                 for(num => image in cast(images, Array<Dynamic>))
                 {
                     var imageUrl = '${image._sBaseUrl}/${image._sFile}';
-                    trace(imageUrl);
+                    //trace(imageUrl);
                     GamebananaAPI.saveImageFromURL(imageUrl, id, 'cache/games/portal/$id/image$num');
                     localImageNum++;
 
@@ -119,7 +119,7 @@ class GamebananaAPI
                 if(heroeDownloadParams.download) 
                 {
                     if(FileSystem.exists('assets/images/games/heroes/${id}_heroe') && !heroeDownloadParams.replace) return;
-                    
+
                     mainThread?.sendMessage({
                         type: 'heroe_download',
                         modId: id
@@ -160,5 +160,10 @@ class GamebananaAPI
                 });
             });
         });
+    }
+
+    public static function getModIdFromUrl(modUrl:String):String
+    {
+        return modUrl.substr(modUrl.length - 6, modUrl.length);
     }
 }

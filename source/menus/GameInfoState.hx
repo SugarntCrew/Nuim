@@ -87,9 +87,11 @@ class GameInfoState extends Substate
 
         var heroeParams:HeroeParams = {
             imagePath: Paths.image('games/heroes/${data.heroe_image}'),
-            bitmapDataLoad: false
+            bitmapDataLoad: false,
+            apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}_heroe')
         }
         heroe = new Heroe(0, 0, heroeParams, true);
+        heroe?.fitToScreen();
         add(heroe);
 
         backgroundGradient = new FlxSprite(0, 140);
@@ -444,7 +446,8 @@ class GameInfoState extends Substate
 
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),
-                        bitmapDataLoad: true
+                        bitmapDataLoad: true,
+                        apiPath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0')
                     }
                     heroe?.regenImage(heroeParams, true, true);
                     heroe?.fitToScreen();
@@ -474,7 +477,8 @@ class GameInfoState extends Substate
                     
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),
-                        bitmapDataLoad: true
+                        bitmapDataLoad: true,
+                        apiPath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0')
                     }
                     heroe?.regenImage(heroeParams, true, true);
                     heroe?.fitToScreen();

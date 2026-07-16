@@ -1,5 +1,6 @@
 package menus;
 
+import backend.api.GamebananaAPI;
 import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import ui.games.Heroe;
@@ -108,7 +109,8 @@ class MainState extends State
 
                 var heroeParams:HeroeParams = {
                     imagePath: Paths.image('games/heroes/${data.heroe_image}'),
-                    bitmapDataLoad: false
+                    bitmapDataLoad: false,
+                    apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}_heroe')
                 }
                 heroe?.onEnterGame(heroeParams, 0.65);
                 FlxG.sound.play(Paths.sound('acceptSfx'));
@@ -157,7 +159,8 @@ class MainState extends State
                 {
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.image('games/heroes/${data.heroe_image}'),
-                        bitmapDataLoad: false
+                        bitmapDataLoad: false,
+                        apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}_heroe')
                     }
                     heroe.regenImage(heroeParams);
                 }
@@ -232,6 +235,7 @@ class MainState extends State
 
         hasExited = false;
 
+        heroe.startPosTween();
         FlxTween.tween(footer, {y: FlxG.height - footer.height}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(FlxG.camera, {zoom: 1}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(bgTransition, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});

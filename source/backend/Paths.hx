@@ -10,13 +10,13 @@ class Paths
 
     public inline static function image(path:String):String
     {
-        if(!FileSystem.exists('assets/images/$path$image_extension')) trace('Did not found the image at path assets/images/$path$image_extension');
+        if(!FileSystem.exists('assets/images/$path$image_extension')) #if debug trace('Did not found the image at path assets/images/$path$image_extension'); #else {}  #end
         return 'assets/images/$path$image_extension';
     }
 
     public inline static function gamebananaAPIimage(path:String):String
     {
-        if(!FileSystem.exists('assets/images/$path.jpg')) trace('Did not found the image at path assets/images/$path.jpg');
+        if(!FileSystem.exists('assets/images/$path.jpg')) #if debug trace('Did not found the image at path assets/images/$path.jpg'); #else {} #end
         return 'assets/images/$path.jpg';
     }
 
