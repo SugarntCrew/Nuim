@@ -196,7 +196,7 @@ class GameInfoState extends Substate
         add(playButton);
 
         gbDownloadBg = new FlxSprite(playButton.x + playButton.width + 10, playButton.y + 4.5);
-        gbDownloadBg.makeGraphic(420, 88, 0xFF000000);
+        gbDownloadBg.makeGraphic(620, 88, 0xFF000000);
         gbDownloadBg.alpha = 0.65;
         gbDownloadBg.visible = false;
         add(gbDownloadBg);
@@ -393,6 +393,10 @@ class GameInfoState extends Substate
             FlxTween.tween(versionTitleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
             FlxTween.tween(versionLine, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
             FlxTween.tween(versionText, {alpha: 1}, duration, {ease: FlxEase.quadOut, onComplete: finishCallback ?? function(twn:FlxTween) {}});
+
+            FlxTween.tween(gbDownloadBg, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(gbDownloadBar, {alpha: 1}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(gbDownloadText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
         }
         else
         {
@@ -420,6 +424,9 @@ class GameInfoState extends Substate
             FlxTween.tween(versionText, {alpha: 0}, duration, {ease: FlxEase.quadOut, onComplete: finishCallback ?? function(twn:FlxTween) {}});
 
             FlxTween.tween(previewImage, {alpha: 0}, duration, {ease: FlxEase.quartOut});
+            FlxTween.tween(gbDownloadBg, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(gbDownloadBar, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(gbDownloadText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
         }
     }
 
@@ -542,7 +549,7 @@ class GameInfoState extends Substate
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),
                         bitmapDataLoad: true,
-                        apiPath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0')
+                        apiPath: Paths.gamebananaAPIimage('games/heroes/${msg.modId}_heroe')
                     }
                     heroe?.regenImage(heroeParams, true, true);
                     heroe?.fitToScreen();
