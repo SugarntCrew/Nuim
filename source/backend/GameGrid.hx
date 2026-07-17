@@ -77,9 +77,16 @@ class GameGrid
         {
             name: "VS Gameoverse",
             game_location: "",
+            grid_image: 'gameoverse',
+            heroe_image: 'gameoverse',
+            gamebanana_url: 'https://gamebanana.com/mods/680661',
+        },
+        {
+            name: "VS Teto",
+            game_location: "",
             grid_image: 'teto',
             heroe_image: 'teto',
-            gamebanana_url: 'https://gamebanana.com/mods/680661',
+            gamebanana_url: 'https://gamebanana.com/mods/669566',
         }
     ];
 }

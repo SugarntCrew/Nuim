@@ -148,7 +148,7 @@ class Heroe extends FlxSprite
 
     public function startPosTween(?twn:FlxTween)
     {
-        posTween = FlxTween.tween(this, {x: x + 50}, 10, {ease: FlxEase.smoothStepInOut, type: PINGPONG, onComplete: (_) -> posTween = null});
+        posTween = FlxTween.tween(this, {x: targetX + 50}, 10, {ease: FlxEase.smoothStepInOut, type: PINGPONG, onComplete: (_) -> posTween = null});
     }
 
     public var targetX:Float = 0;

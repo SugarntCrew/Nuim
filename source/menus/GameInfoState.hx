@@ -427,6 +427,9 @@ class GameInfoState extends Substate
             FlxTween.tween(gbDownloadBg, {alpha: 0}, duration, {ease: FlxEase.quadOut});
             FlxTween.tween(gbDownloadBar, {alpha: 0}, duration, {ease: FlxEase.quadOut});
             FlxTween.tween(gbDownloadText, {alpha: 0}, duration, {ease: FlxEase.quadOut});
+
+            FlxTween.tween(backgroundGradient, {alpha: 0}, 0.6, {ease: FlxEase.quartOut});
+            FlxTween.tween(background, {alpha: 0}, 0.6, {ease: FlxEase.quartOut});
         }
     }
 

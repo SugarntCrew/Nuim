@@ -11,6 +11,7 @@ class MainState extends State
     var hasExited:Bool = false;
     var totalGameColumns:Float = 5;
     var totalGameRows:Float = 0;
+    var lastData:GameData;
 
     // visual vars
     var colorBG:FlxSprite;
@@ -60,6 +61,7 @@ class MainState extends State
             apiPath: Paths.image('games/heroes/template')
         }
         heroe = new Heroe(0, 0, heroeParams);
+        heroe?.fitToScreen();
         add(heroe);
 
         heroeGradient = new FlxSprite();
@@ -111,6 +113,8 @@ class MainState extends State
             {
                 if(hasExited) return;
                 hasExited = true;
+
+                lastData = data;
 
                 var heroeParams:HeroeParams = {
                     imagePath: Paths.image('games/heroes/${data.heroe_image}'),
@@ -240,7 +244,14 @@ class MainState extends State
 
         hasExited = false;
 
-        heroe.startPosTween();
+        var heroeParams:HeroeParams = {
+            imagePath: Paths.image('games/heroes/${lastData.heroe_image}'),
+            bitmapDataLoad: false,
+            apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(lastData.gamebanana_url)}_heroe')
+        }
+        heroe?.regenImage(heroeParams, true, true);
+        heroe?.fitToScreen();
+        heroe?.startPosTween();
         FlxTween.tween(footer, {y: FlxG.height - footer.height}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(FlxG.camera, {zoom: 1}, 0.65, {ease: FlxEase.quartOut});
         FlxTween.tween(bgTransition, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
