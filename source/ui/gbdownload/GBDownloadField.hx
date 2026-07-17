@@ -1,5 +1,7 @@
 package ui.gbdownload;
 
+import backend.FileUtils;
+import backend.ZipUtils;
 import menus.GameInfoState;
 import backend.api.GamebananaAPI;
 import backend.BytesUtil;
@@ -90,12 +92,25 @@ class GBDownloadField extends FlxSpriteGroup
         GameInfoState.instance.downloadProgress = loaded / total;
     }
 
-    function onComplete()
+    function onComplete(path:String)
     {
         if(GameInfoState.instance == null) return;
 
-        GameInfoState.instance.gbDownloadBg.visible = false;
-        GameInfoState.instance.gbDownloadBar.visible = false;
-        GameInfoState.instance.gbDownloadText.visible = false;
+        if(StringTools.endsWith(path, 'zip'))
+        {
+            ZipUtils.unZip(path);
+            ZipUtils.onUnzipComplete = function()
+            {
+                GameInfoState.instance.gbDownloadBg.visible = false;
+                GameInfoState.instance.gbDownloadBar.visible = false;
+                GameInfoState.instance.gbDownloadText.visible = false;
+            }
+        }
+        else
+        {
+            GameInfoState.instance.gbDownloadBg.visible = false;
+            GameInfoState.instance.gbDownloadBar.visible = false;
+            GameInfoState.instance.gbDownloadText.visible = false;
+        }
     }
 }

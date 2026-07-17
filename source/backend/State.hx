@@ -1,5 +1,7 @@
 package backend;
 
+import sys.thread.Thread;
+
 class State extends FlxState
 {
     override function update(elapsed:Float)

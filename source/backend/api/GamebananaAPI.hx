@@ -173,7 +173,7 @@ class GamebananaAPI
         return modUrl.substr(modUrl.length - 6, modUrl.length);
     }
 
-    public static function downloadGamebananaBuild(downloadUrl:String, path:String, onProgressCallback:(loaded:Float, total:Float)->Void, onCompleteCallback:()->Void)
+    public static function downloadGamebananaBuild(downloadUrl:String, path:String, onProgressCallback:(loaded:Float, total:Float)->Void, onCompleteCallback:(path:String)->Void)
     {
         //Thread.create(() -> {
             var loader:URLLoader = new URLLoader();
@@ -187,7 +187,6 @@ class GamebananaAPI
 
             loader.addEventListener(Event.COMPLETE, function(e:Event)
             {
-                if(onCompleteCallback != null) onCompleteCallback();
                 trace('BUILD COMPLETEEE!!!');
 
                 var data = loader.data;
@@ -198,6 +197,8 @@ class GamebananaAPI
                 trace(folderPath);
                 if(!FileSystem.exists(folderPath)) FileSystem.createDirectory(folderPath);
                 File.saveBytes(path, data);
+                
+                if(onCompleteCallback != null) onCompleteCallback(path);
             });
 
             loader.addEventListener(IOErrorEvent.IO_ERROR, function(e)

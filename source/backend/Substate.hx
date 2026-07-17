@@ -1,5 +1,6 @@
 package backend;
 
+import sys.thread.Thread;
 import flixel.FlxSubState;
 
 class Substate extends FlxSubState
