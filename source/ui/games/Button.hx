@@ -1,6 +1,6 @@
 package ui.games;
 
-class PlayButton extends FlxSpriteGroup implements IClickable
+class Button extends FlxSpriteGroup implements IClickable
 {
     private var data:GameData;
     private var refCamera:FlxCamera;

@@ -1,12 +1,17 @@
 package ui.gbdownload;
 
+import flixel.group.FlxGroup.FlxTypedGroup;
+import haxe.Json;
+
 class GBDownloadBoard extends FlxSpriteGroup
 {
     public var onHideCustomBehavior:()->Void;
     public var isBoardOpen:Bool = false;
+    public var filesData:Dynamic;
     
     public var background:FlxSprite;
     public var boardBackground:FlxSprite;
+    public var buildFilesFieldGrp:FlxTypedGroup<GBDownloadField>;
     public function new(x:Float = 0, y:Float = 0)
     {
         super(x, y);
@@ -22,6 +27,8 @@ class GBDownloadBoard extends FlxSpriteGroup
         boardBackground.screenCenter();
         boardBackground.y += 60;
         add(boardBackground);
+
+        buildFilesFieldGrp = new FlxTypedGroup<GBDownloadField>();
     }
 
     override function update(elapsed:Float)
@@ -35,8 +42,18 @@ class GBDownloadBoard extends FlxSpriteGroup
     {
         isBoardOpen = true;
         if(customBehaviour != null) customBehaviour();
-        FlxTween.tween(background, {alpha: 0.6}, duration, {ease: FlxEase.quartOut});
-        FlxTween.tween(boardBackground, {alpha: 0.7}, duration, {ease: FlxEase.quartOut});
+
+        FlxTween.cancelTweensOf(background);
+        FlxTween.cancelTweensOf(boardBackground);
+
+        FlxTween.tween(background, {alpha: 0.2}, duration, {ease: FlxEase.quartOut});
+        FlxTween.tween(boardBackground, {alpha: 0.5}, duration, {ease: FlxEase.quartOut});
+        for(obj in buildFilesFieldGrp)
+        {
+            obj.alpha = 0;
+            FlxTween.cancelTweensOf(obj);
+            FlxTween.tween(obj, {alpha: 1}, duration, {ease: FlxEase.quartOut});
+        }
     }
     
     public function hide(duration:Float, ?customBehaviour:()->Void)
@@ -46,12 +63,31 @@ class GBDownloadBoard extends FlxSpriteGroup
         if(customBehaviour != null) customBehaviour();
 
         active = false;
+
+        FlxTween.cancelTweensOf(background);
+        FlxTween.cancelTweensOf(boardBackground);
+
         FlxTween.tween(background, {alpha: 0}, duration, {ease: FlxEase.quartOut});
         FlxTween.tween(boardBackground, {alpha: 0}, duration, {ease: FlxEase.quartOut});
+        for(obj in buildFilesFieldGrp)
+        {
+            FlxTween.cancelTweensOf(obj);
+            FlxTween.tween(obj, {alpha: 0}, duration, {ease: FlxEase.quartOut});
+        }
     }
 
-    public function refresh(filesData:Dynamic)
+    public function refresh(_filesData:Dynamic)
     {
-        trace(filesData);
+        trace(_filesData);
+        filesData = _filesData;
+
+        for(num => file in cast(filesData, Array<Dynamic>))
+        {
+            var field = new GBDownloadField(boardBackground.x + 20, 0, boardBackground.width - 40, 140, file, this);
+            field.y = boardBackground.y + 20 + (num * (field.height + 10));
+            field.alpha = 0;
+            add(field);
+            buildFilesFieldGrp.add(field);
+        }
     }
 }

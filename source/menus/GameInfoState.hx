@@ -13,7 +13,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import sys.io.File;
 import sys.FileSystem;
 import backend.api.GamebananaAPI;
-import ui.games.PlayButton;
+import ui.games.Button;
 import ui.games.Heroe;
 
 class GameInfoState extends Substate
@@ -33,7 +33,7 @@ class GameInfoState extends Substate
 
     var titleText:FlxText;
     var gamebananaButton:GamebananaButton;
-    var playButton:PlayButton;
+    var playButton:Button;
 
     var previewImage:FlxSprite;
     var previewImageDotsGrp:ImagesDot;
@@ -138,7 +138,7 @@ class GameInfoState extends Substate
         }
         add(gamebananaButton);
 
-        playButton = new PlayButton(line.x + 35, line.y + 20, data, FlxG.cameras.list[FlxG.cameras.list.length - 1]);
+        playButton = new Button(line.x + 35, line.y + 20, data, FlxG.cameras.list[FlxG.cameras.list.length - 1]);
         playButton.onHoverCallback = function(data)
         {
             FlxG.sound.play(Paths.sound('changeSfx'));
@@ -185,6 +185,8 @@ class GameInfoState extends Substate
             }
         }
         playButton.alpha = 0;
+        // TODO: change image only if build does not exist
+        if(data.gamebanana_url != null) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
         add(playButton);
 
         previewImage.x = line.x + 35;
