@@ -8,13 +8,16 @@ class GBDownloadBoard extends FlxSpriteGroup
     public var onHideCustomBehavior:()->Void;
     public var isBoardOpen:Bool = false;
     public var filesData:Dynamic;
+    public var parent:Dynamic;
     
     public var background:FlxSprite;
     public var boardBackground:FlxSprite;
     public var buildFilesFieldGrp:FlxTypedGroup<GBDownloadField>;
-    public function new(x:Float = 0, y:Float = 0)
+    public function new(x:Float = 0, y:Float = 0, ?_stateParent:Dynamic)
     {
         super(x, y);
+
+        if(_stateParent != null) parent = _stateParent; 
 
         background = new FlxSprite();
         background.makeGraphic(FlxG.width, FlxG.height, 0xFF000000);

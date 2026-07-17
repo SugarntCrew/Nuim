@@ -1,5 +1,7 @@
 package ui.gbdownload;
 
+import menus.GameInfoState;
+import backend.api.GamebananaAPI;
 import backend.BytesUtil;
 import ui.games.Button;
 import backend.DateUtils;
@@ -10,16 +12,18 @@ class GBDownloadField extends FlxSpriteGroup
     public var fileData:Dynamic;
     public var downloadUrl:String = '';
     public var downloadButton:Button;
+    public var parent:GBDownloadBoard;
 
     public var bg:FlxSprite;
     public var fileNameTxt:FlxText;
     public var dateText:FlxText;
     public var bytesText:FlxText;
 
-    public function new(x:Float, y:Float, width:Float, height:Float, _fileData:Dynamic, parent:GBDownloadBoard)
+    public function new(x:Float, y:Float, width:Float, height:Float, _fileData:Dynamic, _parent:GBDownloadBoard)
     {
         super(x, y);
 
+        parent = _parent;
         fileData = _fileData;
         downloadUrl = fileData._sDownloadUrl;
         
@@ -41,7 +45,7 @@ class GBDownloadField extends FlxSpriteGroup
         dateText.y += 10 + fileNameTxt.height / 2 - dateText.height / 2;
         add(dateText);
 
-        var bytetext = '- ${FlxMath.roundDecimal(BytesUtil.bytesToMb(fileData._nFilesize), 2)} MB';
+        var bytetext = '- ${BytesUtil.formatBytes(fileData._nFilesize)}';
         bytesText = new FlxText(0, 0, 0, bytetext ?? '0 bytes', 20);
         bytesText.setFormat(Paths.font('advent_pro'), 18, 0xFF979797, LEFT);
         bytesText.x += 10 + fileNameTxt.width + 10 + dateText.width + 10;
@@ -64,7 +68,34 @@ class GBDownloadField extends FlxSpriteGroup
         {
             // download stuff
             parent.hide(0.9);
+            @:privateAccess
+            {
+                GamebananaAPI.downloadGamebananaBuild(downloadUrl, Paths.gamebananaDownload(GameInfoState.instance != null ? '${GamebananaAPI.getModIdFromUrl(GameInfoState.instance.data.gamebanana_url)}/build' : 'build', 'zip'), onProgress, onComplete);
+            }
         }
         add(downloadButton);
+    }
+
+    function onProgress(loaded:Float, total:Float)
+    {
+        if(GameInfoState.instance == null) return;
+
+        GameInfoState.instance.gbDownloadBg.visible = true;
+        GameInfoState.instance.gbDownloadBar.visible = true;
+        GameInfoState.instance.gbDownloadText.visible = true;
+
+        var textLoaded = '${BytesUtil.formatBytes(loaded)}';
+        var textTotal = '${BytesUtil.formatBytes(total)}';
+        GameInfoState.instance.gbDownloadText.text = '$textLoaded / $textTotal';
+        GameInfoState.instance.downloadProgress = loaded / total;
+    }
+
+    function onComplete()
+    {
+        if(GameInfoState.instance == null) return;
+
+        GameInfoState.instance.gbDownloadBg.visible = false;
+        GameInfoState.instance.gbDownloadBar.visible = false;
+        GameInfoState.instance.gbDownloadText.visible = false;
     }
 }

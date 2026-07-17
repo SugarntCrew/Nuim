@@ -18,6 +18,7 @@ import ui.games.Heroe;
 
 class GameInfoState extends Substate
 {
+    public static var instance:GameInfoState;
     private var data:GameData;
     private var camReference:FlxCamera;
 
@@ -34,6 +35,11 @@ class GameInfoState extends Substate
     var titleText:FlxText;
     var gamebananaButton:GamebananaButton;
     var playButton:Button;
+
+    public var downloadProgress:Float;
+    public var gbDownloadBg:FlxSprite;
+    public var gbDownloadBar:FlxBar;
+    public var gbDownloadText:FlxText;
 
     var previewImage:FlxSprite;
     var previewImageDotsGrp:ImagesDot;
@@ -85,6 +91,8 @@ class GameInfoState extends Substate
         trace('Substate opened!');
 
         main = Thread.current();
+
+        instance = this;
 
         previewImage = new FlxSprite();
 
@@ -188,6 +196,24 @@ class GameInfoState extends Substate
         // TODO: change image only if build does not exist
         if(data.gamebanana_url != null) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
         add(playButton);
+
+        gbDownloadBg = new FlxSprite(playButton.x + playButton.width + 10, playButton.y + 4.5);
+        gbDownloadBg.makeGraphic(420, 88, 0xFF000000);
+        gbDownloadBg.alpha = 0.65;
+        gbDownloadBg.visible = false;
+        add(gbDownloadBg);
+
+        gbDownloadBar = new FlxBar(gbDownloadBg.x + 10, 0, LEFT_TO_RIGHT, Std.int(gbDownloadBg.width - 20), 5, this, 'downloadProgress', 0, 1);
+        gbDownloadBar.y = gbDownloadBg.y + gbDownloadBg.height - gbDownloadBar.height - 10;
+        gbDownloadBar.createFilledBar(0xFFA1A1A1, 0xFFE9E9E9);
+        gbDownloadBar.visible = false;
+        add(gbDownloadBar);
+
+        gbDownloadText = new FlxText(gbDownloadBg.x, 0, gbDownloadBg.width, '', 20);
+        gbDownloadText.setFormat(Paths.font('advent_pro'), 25, 0xFFFFFFFF, CENTER);
+        gbDownloadText.y = gbDownloadBg.y + 10;
+        gbDownloadText.visible = false;
+        add(gbDownloadText);
 
         previewImage.x = line.x + 35;
         previewImage.y = playButton.y + playButton.height + 30;
@@ -315,7 +341,7 @@ class GameInfoState extends Substate
         versionText.alpha = 0;
         add(versionText);
 
-        gbDownloadBoard = new GBDownloadBoard(0, 0);
+        gbDownloadBoard = new GBDownloadBoard(0, 0, this);
         gbDownloadBoard.scrollFactor.set(0, 0);
         gbDownloadBoard.active = false;
         gbDownloadBoard.onHideCustomBehavior = function()
@@ -658,6 +684,7 @@ class GameInfoState extends Substate
     override function destroy()
     {
         subAlive = false;
+        instance = null;
         super.destroy();
     }
 

@@ -1,5 +1,11 @@
 package backend.api;
 
+import haxe.io.Bytes;
+import openfl.net.URLRequest;
+import openfl.events.IOErrorEvent;
+import openfl.events.Event;
+import openfl.events.ProgressEvent;
+import openfl.net.URLLoader;
 import ui.games.Heroe.HeroeParams;
 import menus.GameInfoState;
 import sys.thread.Thread;
@@ -165,5 +171,42 @@ class GamebananaAPI
     public static function getModIdFromUrl(modUrl:String):String
     {
         return modUrl.substr(modUrl.length - 6, modUrl.length);
+    }
+
+    public static function downloadGamebananaBuild(downloadUrl:String, path:String, onProgressCallback:(loaded:Float, total:Float)->Void, onCompleteCallback:()->Void)
+    {
+        //Thread.create(() -> {
+            var loader:URLLoader = new URLLoader();
+            loader.dataFormat = BINARY;
+
+            loader.addEventListener(ProgressEvent.PROGRESS, function(e:ProgressEvent) 
+            {
+                if(onProgressCallback != null) onProgressCallback(e.bytesLoaded, e.bytesTotal);
+                // trace('${e.bytesLoaded}/${e.bytesTotal}');
+            });
+
+            loader.addEventListener(Event.COMPLETE, function(e:Event)
+            {
+                if(onCompleteCallback != null) onCompleteCallback();
+                trace('BUILD COMPLETEEE!!!');
+
+                var data = loader.data;
+
+                var index = path.lastIndexOf('/');
+                var folderPath = path.substr(0, index);
+                trace(path);
+                trace(folderPath);
+                if(!FileSystem.exists(folderPath)) FileSystem.createDirectory(folderPath);
+                File.saveBytes(path, data);
+            });
+
+            loader.addEventListener(IOErrorEvent.IO_ERROR, function(e)
+            {
+                trace('Download failed! ${e.text}');
+            });
+
+            var request = new URLRequest(downloadUrl);
+            loader.load(request);
+        //});
     }
 }

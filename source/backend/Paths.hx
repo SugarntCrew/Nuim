@@ -34,4 +34,9 @@ class Paths
     {
         return 'assets/fonts/$path$font_extension';
     }
+
+    public inline static function gamebananaDownload(path:String, extension:String):String
+    {
+        return 'assets/data/builds/$path.$extension';
+    }
 }
