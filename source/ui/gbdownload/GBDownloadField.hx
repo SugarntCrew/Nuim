@@ -1,5 +1,6 @@
 package ui.gbdownload;
 
+import sys.thread.Thread;
 import backend.FileUtils;
 import backend.ZipUtils;
 import menus.GameInfoState;
@@ -11,21 +12,26 @@ import haxe.Json;
 
 class GBDownloadField extends FlxSpriteGroup
 {
+    public var data:Dynamic;
     public var fileData:Dynamic;
     public var downloadUrl:String = '';
     public var downloadButton:Button;
     public var parent:GBDownloadBoard;
+    public var mainThread:Thread;
 
     public var bg:FlxSprite;
     public var fileNameTxt:FlxText;
     public var dateText:FlxText;
     public var bytesText:FlxText;
 
-    public function new(x:Float, y:Float, width:Float, height:Float, _fileData:Dynamic, _parent:GBDownloadBoard)
+    public function new(x:Float, y:Float, width:Float, height:Float, _fileData:Dynamic, _data:Dynamic, _parent:GBDownloadBoard, _mainThread:Thread)
     {
         super(x, y);
 
+        mainThread = _mainThread;
+
         parent = _parent;
+        data = _data;
         fileData = _fileData;
         downloadUrl = fileData._sDownloadUrl;
         
@@ -66,51 +72,71 @@ class GBDownloadField extends FlxSpriteGroup
         {
             FlxG.sound.play(Paths.sound('changeSfx'));
         }
-        downloadButton.onClickCallback = function(data, ?customBehavior)
+        downloadButton.onClickCallback = function(_data, ?customBehavior)
         {
             // download stuff
             parent.hide(0.9);
             @:privateAccess
             {
-                GamebananaAPI.downloadGamebananaBuild(downloadUrl, Paths.gamebananaDownload(GameInfoState.instance != null ? '${GamebananaAPI.getModIdFromUrl(GameInfoState.instance.data.gamebanana_url)}/build' : 'build', 'zip'), onProgress, onComplete);
+                GamebananaAPI.downloadGamebananaBuild(downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}/build', 'zip'), onProgress, onComplete);
             }
         }
         add(downloadButton);
     }
 
+    override function update(elapsed:Float)
+    {
+        super.update(elapsed);
+    }
+
     function onProgress(loaded:Float, total:Float)
     {
-        if(GameInfoState.instance == null) return;
-
-        GameInfoState.instance.gbDownloadBg.visible = true;
-        GameInfoState.instance.gbDownloadBar.visible = true;
-        GameInfoState.instance.gbDownloadText.visible = true;
-
-        var textLoaded = '${BytesUtil.formatBytes(loaded)}';
-        var textTotal = '${BytesUtil.formatBytes(total)}';
-        GameInfoState.instance.gbDownloadText.text = '$textLoaded / $textTotal';
-        GameInfoState.instance.downloadProgress = loaded / total;
+        mainThread.sendMessage({
+            type: 'build_download_progress',
+            loaded: loaded,
+            total: total,
+            progress: loaded / total
+        });
     }
 
     function onComplete(path:String)
     {
-        if(GameInfoState.instance == null) return;
+        mainThread.sendMessage({
+            type: 'build_download_success'
+        });
 
         if(StringTools.endsWith(path, 'zip'))
         {
-            ZipUtils.unZip(path);
-            ZipUtils.onUnzipComplete = function()
+            ZipUtils.unZip(path, 
+            function(loaded) // read
             {
-                GameInfoState.instance.gbDownloadBg.visible = false;
-                GameInfoState.instance.gbDownloadBar.visible = false;
-                GameInfoState.instance.gbDownloadText.visible = false;
-            }
-        }
-        else
-        {
-            GameInfoState.instance.gbDownloadBg.visible = false;
-            GameInfoState.instance.gbDownloadBar.visible = false;
-            GameInfoState.instance.gbDownloadText.visible = false;
+                trace("Sending readzip_progress");
+
+                mainThread.sendMessage({
+                    type: 'readzip_progress',
+                    loaded: loaded
+                });
+            },
+            function(loaded, total, writtenBytes) // unzip
+            {
+                trace("Sending unzip_progress");
+
+                mainThread.sendMessage({
+                    type: 'unzip_progress',
+                    loaded: loaded,
+                    total: total,
+                    progress: loaded / total,
+                    writtenBytes: writtenBytes
+                });
+            },
+            function() // complete
+            {
+                trace("Sending unzip_complete");
+
+                mainThread.sendMessage({
+                    type: 'unzip_complete'
+                });
+            });
         }
     }
 }

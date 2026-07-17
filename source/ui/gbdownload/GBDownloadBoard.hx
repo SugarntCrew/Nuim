@@ -1,5 +1,6 @@
 package ui.gbdownload;
 
+import sys.thread.Thread;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import haxe.Json;
 
@@ -9,13 +10,16 @@ class GBDownloadBoard extends FlxSpriteGroup
     public var isBoardOpen:Bool = false;
     public var filesData:Dynamic;
     public var parent:Dynamic;
+    public var data:Dynamic;
     
     public var background:FlxSprite;
     public var boardBackground:FlxSprite;
     public var buildFilesFieldGrp:FlxTypedGroup<GBDownloadField>;
-    public function new(x:Float = 0, y:Float = 0, ?_stateParent:Dynamic)
+    public function new(x:Float = 0, y:Float = 0, ?_stateParent:Dynamic, _data:Dynamic)
     {
         super(x, y);
+
+        data = _data;
 
         if(_stateParent != null) parent = _stateParent; 
 
@@ -79,14 +83,14 @@ class GBDownloadBoard extends FlxSpriteGroup
         }
     }
 
-    public function refresh(_filesData:Dynamic)
+    public function refresh(_filesData:Dynamic, _mainThread:Thread)
     {
         trace(_filesData);
         filesData = _filesData;
 
         for(num => file in cast(filesData, Array<Dynamic>))
         {
-            var field = new GBDownloadField(boardBackground.x + 20, 0, boardBackground.width - 40, 140, file, this);
+            var field = new GBDownloadField(boardBackground.x + 20, 0, boardBackground.width - 40, 140, file, data, this, _mainThread);
             field.y = boardBackground.y + 20 + (num * (field.height + 10));
             field.alpha = 0;
             add(field);

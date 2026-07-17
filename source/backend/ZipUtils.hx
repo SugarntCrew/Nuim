@@ -1,7 +1,6 @@
 package backend;
 
 import sys.thread.Thread;
-import haxe.zip.Reader;
 import sys.io.File;
 import sys.FileSystem;
 import haxe.zip.Entry;
@@ -10,15 +9,15 @@ import haxe.ds.List;
 
 class ZipUtils
 {
-    public static var onUnzipComplete:()->Void;
     /**
      * Function used to unzip (decompress) a specific file. (ASYNC)
      * 
      * @param path The path of the file to unzip.
      */
-    public static function unZip(path:String)
+    public static function unZip(path:String, ?onProgressRead:(loaded:Int) -> Void, ?onProgressUnzip:(loaded:Int, total:Int, writtenBytes:Float) -> Void, ?onComplete:() -> Void)
     {
         Thread.create(() -> {
+            var localEntriesNum:Int = 0;
             trace('Starting unzip process!');
 
             var savePath = StringTools.replace(path, '.zip', '/');
@@ -28,16 +27,21 @@ class ZipUtils
             }
 
             var file = File.read(path);
-            trace('File read!');
+            trace('File read! ($file)');
 
-            var filesInZip = Reader.readZip(file);
+            var filesInZip = Reader.readZip(file, function()
+            {
+                localEntriesNum++;
+                trace("READ ENTRY " + localEntriesNum);
+                if(onProgressRead != null) onProgressRead(localEntriesNum);
+            });
             file.close();
 
             var bytes:haxe.io.Bytes = null;
             try
             {
                 var zipBytesWritten:Float = 1;
-                for (entry in filesInZip) 
+                for (num => entry in filesInZip) 
                 {
                     //Sys.print('\rProcessing entry: ${entry.fileName}');
                     //Sys.println('');
@@ -55,6 +59,9 @@ class ZipUtils
                             var f = File.write(savePath + entry.fileName, true);
                             f.write(bytes);
                             f.close();
+
+                            if(onProgressUnzip != null)
+                                onProgressUnzip(num, localEntriesNum, zipBytesWritten);
                         } catch(exc:Dynamic) {
                             trace('Error processing entry ${entry.fileName} - ${exc.message}');
                         }
@@ -71,10 +78,7 @@ class ZipUtils
 
             trace('Finished unzipped!');
             trace('Saved!');
-            if(onUnzipComplete != null) onUnzipComplete();
-            Thread.current().sendMessage({
-                type: 'unzip_complete',
-            });
+            if(onComplete != null) onComplete();
         });
     }
 }
@@ -199,7 +203,7 @@ class Reader {
         };
     }
 
-    public function read():List<Entry> {
+    public function read(?onProgress:() -> Void):List<Entry> {
         var l = new List();
         var buf = null;
         var tmp = null;
@@ -270,6 +274,7 @@ class Reader {
                 e.data = i.read(e.dataSize);
             l.add(e);
             #if (debug || develop) Sys.println('      Reading entry: ' + e.fileName); #end
+            if(onProgress != null) onProgress();
             readFiles = e.fileName;
         }
         Sys.println('      Ending process');
@@ -277,10 +282,10 @@ class Reader {
         return l;
     }
 
-    public static function readZip(i:haxe.io.Input) {
+    public static function readZip(i:haxe.io.Input, ?onProgress:() -> Void) {
     Sys.println('      Starting static process');
         var r = new Reader(i);
-        return r.read();
+        return r.read(onProgress);
     }
 
     public static function unzip(f:Entry) {

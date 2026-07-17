@@ -1,5 +1,6 @@
 package menus;
 
+import backend.BytesUtil;
 import ui.gbdownload.GBDownloadBoard;
 import ui.header.DateText;
 import backend.DateUtils;
@@ -18,7 +19,6 @@ import ui.games.Heroe;
 
 class GameInfoState extends Substate
 {
-    public static var instance:GameInfoState;
     private var data:GameData;
     private var camReference:FlxCamera;
 
@@ -91,8 +91,6 @@ class GameInfoState extends Substate
         trace('Substate opened!');
 
         main = Thread.current();
-
-        instance = this;
 
         previewImage = new FlxSprite();
 
@@ -341,7 +339,7 @@ class GameInfoState extends Substate
         versionText.alpha = 0;
         add(versionText);
 
-        gbDownloadBoard = new GBDownloadBoard(0, 0, this);
+        gbDownloadBoard = new GBDownloadBoard(0, 0, this, data);
         gbDownloadBoard.scrollFactor.set(0, 0);
         gbDownloadBoard.active = false;
         gbDownloadBoard.onHideCustomBehavior = function()
@@ -502,7 +500,7 @@ class GameInfoState extends Substate
                         releaseText.text = '$releaseYear';
                     }
 
-                    gbDownloadBoard.refresh(msg.files);
+                    gbDownloadBoard.refresh(msg.files, main);
 
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),
@@ -557,6 +555,51 @@ class GameInfoState extends Substate
                     imageNum = msg.imagesDownloaded;
 
                     downloadProgressText.text = 'Downloading images from GameBanana (${msg.imagesDownloaded}/${msg.imagesTotal})';
+                case 'build_download_progress':
+                    var loaded = msg.loaded;
+                    var total = msg.total;
+                    var progress = msg.progress;
+
+                    gbDownloadBg.visible = true;
+                    gbDownloadBar.visible = true;
+                    gbDownloadText.visible = true;
+
+                    var textLoaded = '${BytesUtil.formatBytes(loaded)}';
+                    var textTotal = '${BytesUtil.formatBytes(total)}';
+                    gbDownloadText.text = '$textLoaded / $textTotal';
+                    downloadProgress = progress;
+                case 'build_download_success':
+                    gbDownloadBg.visible = false;
+                    gbDownloadBar.visible = false;
+                    gbDownloadText.visible = false;
+                case 'readzip_progress':
+                    trace("Reading readzip_progress");
+
+                    gbDownloadBg.visible = true;
+                    gbDownloadBar.visible = false;
+                    gbDownloadText.visible = true;
+
+                    gbDownloadText.text = 'Reading zip... (${msg.loaded} entries)';
+                case 'unzip_progress':
+                    trace("Reading unzip_progress");
+
+                    var loaded = msg.loaded;
+                    var total = msg.total;
+                    var progress = msg.progress;
+                    var writtenBytes = msg.writtenBytes;
+
+                    gbDownloadBg.visible = true;
+                    gbDownloadBar.visible = true;
+                    gbDownloadText.visible = true;
+
+                    gbDownloadText.text = 'Unzipping ${BytesUtil.formatBytes(writtenBytes)} ($loaded/$total entries unzipped)';
+                    downloadProgress = progress;
+
+                case 'unzip_complete':
+                    trace("Reading unzip_complete");
+                    gbDownloadBg.visible = false;
+                    gbDownloadBar.visible = false;
+                    gbDownloadText.visible = false;
                 default:
             }
 
@@ -684,7 +727,6 @@ class GameInfoState extends Substate
     override function destroy()
     {
         subAlive = false;
-        instance = null;
         super.destroy();
     }
 
