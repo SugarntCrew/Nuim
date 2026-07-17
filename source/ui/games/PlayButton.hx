@@ -33,6 +33,8 @@ class PlayButton extends FlxSpriteGroup implements IClickable
     public var alphaTarget:Float = 0;
     override function update(elapsed:Float)
     {
+        if(!active) return;
+        
         super.update(elapsed);
 
         FlxTween.cancelTweensOf(playButtonBorder);

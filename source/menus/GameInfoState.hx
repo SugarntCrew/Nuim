@@ -1,5 +1,6 @@
 package menus;
 
+import ui.gbdownload.GBDownloadBoard;
 import ui.header.DateText;
 import backend.DateUtils;
 import flixel.ui.FlxBar;
@@ -60,6 +61,8 @@ class GameInfoState extends Substate
     var versionTitleText:FlxText;
     var versionLine:FlxSprite;
     var versionText:FlxText;
+
+    var gbDownloadBoard:GBDownloadBoard;
 
     var header:Header;
     var footer:Footer;
@@ -142,31 +145,44 @@ class GameInfoState extends Substate
         }
         playButton.onClickCallback = function(data, ?customBehavior)
         {
-            var location:String = data.game_location;
-            
-            if(!FileSystem.exists(location)) return;
-
-            trace(location);
-
-            var path = location.substr(0, location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\"));
-            var exeName = location.substr((location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\")) + 1, location.length);
-            if(!StringTools.endsWith(exeName, '.exe')) exeName = location.substr((location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\")) + 1, location.length);
-            if(!StringTools.endsWith(exeName, '.exe')) return;
-
-            trace(exeName);
-            var appName = exeName.substr(0, exeName.length - 4);
-            trace(appName);
-            trace(path);
-
-            Sys.setCwd(path);
-
-            var process = new Process('start $appName');
-            if(process.exitCode() == 0)
+            // NOTE: THIS ALSO HAS TO INCLUDE IF THE BUILD IS ALREADY DOWNLOADED TO SKIP THIS AND OPEN THE GAME EVEN THOUGH OF THE GAMEBANANA URL
+            if(data.gamebanana_url != null)
             {
-                trace('Reset path to launcher');
-                Sys.setCwd(Constants.LAUNCHER_PATH);
+                gbDownloadBoard.active = true;
+                gbDownloadBoard.show(0.9, function()
+                {
+                    playButton.active = false;
+                    canScroll = false;
+                });
             }
-            process.close();
+            else
+            {
+                var location:String = data.game_location;
+                
+                if(!FileSystem.exists(location)) return;
+
+                trace(location);
+
+                var path = location.substr(0, location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\"));
+                var exeName = location.substr((location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\")) + 1, location.length);
+                if(!StringTools.endsWith(exeName, '.exe')) exeName = location.substr((location.lastIndexOf("\\") == -1 ? location.lastIndexOf("/") : location.lastIndexOf("\\")) + 1, location.length);
+                if(!StringTools.endsWith(exeName, '.exe')) return;
+
+                trace(exeName);
+                var appName = exeName.substr(0, exeName.length - 4);
+                trace(appName);
+                trace(path);
+
+                Sys.setCwd(path);
+
+                var process = new Process('start $appName');
+                if(process.exitCode() == 0)
+                {
+                    trace('Reset path to launcher');
+                    Sys.setCwd(Constants.LAUNCHER_PATH);
+                }
+                process.close();
+            }
         }
         playButton.alpha = 0;
         add(playButton);
@@ -296,6 +312,16 @@ class GameInfoState extends Substate
         versionText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
         versionText.alpha = 0;
         add(versionText);
+
+        gbDownloadBoard = new GBDownloadBoard(0, 0);
+        gbDownloadBoard.scrollFactor.set(0, 0);
+        gbDownloadBoard.active = false;
+        gbDownloadBoard.onHideCustomBehavior = function()
+        {
+            canScroll = true;
+            playButton.active = true;
+        }
+        add(gbDownloadBoard);
         
         header = new Header();
         header.scrollFactor.set(0, 0);
@@ -373,13 +399,15 @@ class GameInfoState extends Substate
 
     var targetScrollY:Float = 0;
     var scrollIntensity:Float = 40;
+    var canScroll:Bool = true;
     override function update(elapsed:Float)
     {
         super.update(elapsed);
 
         if(FlxG.keys.justPressed.ESCAPE)
         {
-            goBackToMain();
+            if(gbDownloadBoard.isBoardOpen) gbDownloadBoard.hide(0.7);
+            else goBackToMain();
         }
 
         if(FlxG.keys.justPressed.LEFT)
@@ -397,6 +425,8 @@ class GameInfoState extends Substate
 
         if(FlxG.mouse.wheel != 0)
         {
+            if(!canScroll) return;
+
             if(FlxG.mouse.wheel > 0) 
             {
                 targetScrollY += -scrollIntensity;
