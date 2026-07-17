@@ -1,5 +1,6 @@
 package ui.gbdownload;
 
+import backend.BytesUtil;
 import ui.games.Button;
 import backend.DateUtils;
 import haxe.Json;
@@ -13,6 +14,7 @@ class GBDownloadField extends FlxSpriteGroup
     public var bg:FlxSprite;
     public var fileNameTxt:FlxText;
     public var dateText:FlxText;
+    public var bytesText:FlxText;
 
     public function new(x:Float, y:Float, width:Float, height:Float, _fileData:Dynamic, parent:GBDownloadBoard)
     {
@@ -38,6 +40,13 @@ class GBDownloadField extends FlxSpriteGroup
         dateText.x += 10 + fileNameTxt.width + 10;
         dateText.y += 10 + fileNameTxt.height / 2 - dateText.height / 2;
         add(dateText);
+
+        var bytetext = '- ${FlxMath.roundDecimal(BytesUtil.bytesToMb(fileData._nFilesize), 2)} MB';
+        bytesText = new FlxText(0, 0, 0, bytetext ?? '0 bytes', 20);
+        bytesText.setFormat(Paths.font('advent_pro'), 18, 0xFF979797, LEFT);
+        bytesText.x += 10 + fileNameTxt.width + 10 + dateText.width + 10;
+        bytesText.y += 10 + fileNameTxt.height / 2 - dateText.height / 2;
+        add(bytesText);
 
         downloadButton = new Button(0, 0, null, FlxG.cameras.list[FlxG.cameras.list.length - 1 ]);
         downloadButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
