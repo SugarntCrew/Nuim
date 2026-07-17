@@ -474,6 +474,8 @@ class GameInfoState extends Substate
                         releaseText.text = '$releaseYear';
                     }
 
+                    gbDownloadBoard.refresh(msg.files);
+
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),
                         bitmapDataLoad: true,
@@ -500,6 +502,12 @@ class GameInfoState extends Substate
                     previewImageDotsGrp.x = previewImage.x + previewImage.width / 2 - previewImageDotsGrp.width / 2;
                     previewImageDotsGrp.y = previewImage.y + previewImage.height + 20;
                     add(previewImageDotsGrp);
+                    
+                    remove(gbDownloadBoard, false);
+                    insert(members.length, gbDownloadBoard);
+
+                    remove(header, false);
+                    insert(members.length, header);
 
                     downloadProgressBar.visible = false;
                     downloadProgressText.visible = false;

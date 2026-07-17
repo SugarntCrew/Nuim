@@ -49,4 +49,9 @@ class GBDownloadBoard extends FlxSpriteGroup
         FlxTween.tween(background, {alpha: 0}, duration, {ease: FlxEase.quartOut});
         FlxTween.tween(boardBackground, {alpha: 0}, duration, {ease: FlxEase.quartOut});
     }
+
+    public function refresh(filesData:Dynamic)
+    {
+        trace(filesData);
+    }
 }
