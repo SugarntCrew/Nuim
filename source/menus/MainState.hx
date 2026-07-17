@@ -54,7 +54,12 @@ class MainState extends State
         colorBG.scrollFactor.set(0, 0);
         add(colorBG);
 
-        heroe = new Heroe(0, 0, null);
+        var heroeParams:HeroeParams = {
+            imagePath: Paths.image('games/heroes/template'),
+            bitmapDataLoad: false,
+            apiPath: Paths.image('games/heroes/template')
+        }
+        heroe = new Heroe(0, 0, heroeParams);
         add(heroe);
 
         heroeGradient = new FlxSprite();
