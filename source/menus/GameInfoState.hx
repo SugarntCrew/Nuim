@@ -724,6 +724,7 @@ class GameInfoState extends Substate
         var path = Paths.gamebananaAPIimage('cache/games/portal/$modId/$image');
         previewImage.loadGraphic(openfl.display.BitmapData.fromFile(path));
         previewImage.setGraphicSize(750);
+        if(previewImage.height > 425) previewImage.setGraphicSize(0, 421);
         previewImage.updateHitbox();
 
         var width:Float = descriptionBackground.x - (line.x + 35);
