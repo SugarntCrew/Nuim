@@ -11,6 +11,7 @@ class Header extends FlxSpriteGroup
     public var userAccountUI:UserAccountUI;
     public var hourTimeTxt:HourText;
     public var dateTimeTxt:DateText;
+    public var dayTimeSpr:FlxSprite;
     public function new()
     {
         super();
@@ -38,18 +39,25 @@ class Header extends FlxSpriteGroup
         }
         add(userAccountUI);
 
+        dayTimeSpr = new FlxSprite();
+        dayTimeSpr.loadGraphic(Paths.image('ui/header/daytime/${DateUtils.getDayTime()}'));
+        add(dayTimeSpr);
+
         hourTimeTxt = new HourText(0, 0, 250);
         hourTimeTxt.text = DateUtils.formatTime(DateUtils.getCurrentTime());
         hourTimeTxt.setFormat(Paths.font('advent_pro'), 40, 0xFFFFFFFF, CENTER);
-        hourTimeTxt.x = 1410;
+        hourTimeTxt.x = 1430;
         hourTimeTxt.y = 123 / 2 - hourTimeTxt.height / 2 - 15;
         add(hourTimeTxt);
 
         dateTimeTxt = new DateText(0, 0, 250);
         dateTimeTxt.text = DateUtils.formatDate(DateUtils.getCurrentDate());
         dateTimeTxt.setFormat(Paths.font('advent_pro'), 25, 0xFFEBEBEB, CENTER);
-        dateTimeTxt.x = 1410;
+        dateTimeTxt.x = 1430;
         dateTimeTxt.y = hourTimeTxt.y + hourTimeTxt.height;
         add(dateTimeTxt);
+
+        dayTimeSpr.x = hourTimeTxt.x - dayTimeSpr.width + 10;
+        dayTimeSpr.y = 123 / 2 - dayTimeSpr.height / 2;
     }
 }

@@ -7,6 +7,25 @@ class DateUtils
         return Date.now();
     }
 
+    public static function getDayTime():String
+    {
+        var date = getCurrentDateData();
+        var hour = date.getHours();
+        
+        if(hour >= 8 && hour <= 18)
+        {
+            return 'day';
+        }
+        else if((hour >= 19 && hour <= 20) || (hour >= 6 && hour <= 7))
+        {
+            return 'sunset';
+        }
+        else
+        {
+            return 'night';
+        }
+    }
+
     public static function getCurrentDate():Array<Int>
     {
         var date = getCurrentDateData();
