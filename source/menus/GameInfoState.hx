@@ -602,7 +602,7 @@ class GameInfoState extends Substate
                     gbDownloadBar.visible = true;
                     gbDownloadText.visible = true;
 
-                    gbDownloadText.text = 'Unzipping ${BytesUtil.formatBytes(writtenBytes)} ($loaded/$total entries unzipped)';
+                    gbDownloadText.text = 'Unzipping ${BytesUtil.formatBytes(writtenBytes)} ($loaded/$total)';
                     downloadProgress = progress;
 
                 case 'unzip_complete':

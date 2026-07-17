@@ -87,6 +87,13 @@ class GameGrid
             grid_image: 'teto',
             heroe_image: 'teto',
             gamebanana_url: 'https://gamebanana.com/mods/669566',
+        },
+        {
+            name: "gBvNeverEvers",
+            game_location: "",
+            grid_image: 'teto',
+            heroe_image: 'teto',
+            gamebanana_url: 'https://gamebanana.com/mods/479317',
         }
     ];
 }

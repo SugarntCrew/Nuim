@@ -78,7 +78,11 @@ class GBDownloadField extends FlxSpriteGroup
             parent.hide(0.9);
             @:privateAccess
             {
-                GamebananaAPI.downloadGamebananaBuild(downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}/build', 'zip'), onProgress, onComplete);
+                var index = fileData._sFile.lastIndexOf('.');
+                var extension = fileData._sFile.substr(index, fileData._sFile.length);
+                trace(extension);
+
+                GamebananaAPI.downloadGamebananaBuild(downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}/build', extension), onProgress, onComplete);
             }
         }
         add(downloadButton);
