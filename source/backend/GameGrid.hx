@@ -73,6 +73,13 @@ class GameGrid
             grid_image: 'prange',
             heroe_image: 'prange',
             gamebanana_url: 'https://gamebanana.com/mods/693558',
+        },
+        {
+            name: "VS Gameoverse",
+            game_location: "",
+            grid_image: 'teto',
+            heroe_image: 'teto',
+            gamebanana_url: 'https://gamebanana.com/mods/680661',
         }
     ];
 }
