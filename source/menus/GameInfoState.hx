@@ -90,8 +90,6 @@ class GameInfoState extends Substate
         super.create();
         trace('Substate opened!');
 
-		Main.notificationPopup.popUpNotification('notification/default', 'Success!', 'Game successfully started!');
-
         main = Thread.current();
 
         previewImage = new FlxSprite();
@@ -568,6 +566,7 @@ class GameInfoState extends Substate
 
                     downloadProgressText.text = 'Downloading images from GameBanana (${msg.imagesDownloaded}/${msg.imagesTotal})';
                 case 'build_download_progress':
+
                     var loaded = msg.loaded;
                     var total = msg.total;
                     var progress = msg.progress;
@@ -581,6 +580,9 @@ class GameInfoState extends Substate
                     gbDownloadText.text = '$textLoaded / $textTotal';
                     downloadProgress = progress;
                 case 'build_download_success':
+
+		            Main.notificationPopup.popUpNotification('notification/default', 'Download successed!', 'The selected build has been downloaded');
+
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;
                     gbDownloadText.visible = false;
@@ -608,6 +610,9 @@ class GameInfoState extends Substate
                     downloadProgress = progress;
 
                 case 'unzip_complete':
+
+		            Main.notificationPopup.popUpNotification('notification/default', 'Unzip successed!', 'Game is ready to play!');
+
                     trace("Reading unzip_complete");
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;

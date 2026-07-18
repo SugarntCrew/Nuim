@@ -30,9 +30,9 @@ class Notification extends Sprite {
         addChild(bg);
 
         txtTitle = new TextField();
-        txtTitle.defaultTextFormat = new TextFormat("VCR OSD Mono", 70, FlxColor.WHITE, true, null, null, null, null, "center");
+        txtTitle.defaultTextFormat = new TextFormat(Paths.font('advent_pro'), 40, FlxColor.WHITE, true, null, null, null, null, "left");
         txtTitle.text = title;
-        txtTitle.autoSize = CENTER;
+        txtTitle.autoSize = LEFT;
 		txtTitle.multiline = true;
         //txtTitle.width = 0;
         txtTitle.y = -500;
@@ -40,17 +40,17 @@ class Notification extends Sprite {
         addChild(txtTitle);
 
         txtInfo = new TextField();
-        txtInfo.defaultTextFormat = new TextFormat("VCR OSD Mono", 55, FlxColor.WHITE, true, null, null, null, null, "center");
+        txtInfo.defaultTextFormat = new TextFormat(Paths.font('advent_pro'), 25, FlxColor.WHITE, true, null, null, null, null, "left");
         txtInfo.text = info;
-        txtInfo.autoSize = CENTER;
+        txtInfo.autoSize = LEFT;
 		txtInfo.multiline = true;
         //txtInfo.width = 0;
         txtInfo.y = -500;
         //txtInfo.border = true;
         addChild(txtInfo);
 
-        bg.width = Math.ceil(txtInfo.textWidth) + 10;
-        bg.height = Math.ceil(txtInfo.textHeight) * 2 + 10;
+        bg.width = 350;
+        bg.height = Math.ceil(txtInfo.textHeight) * 2 + 30;
         FlxG.sound.play(Paths.sound(sound));
 
         txtTitle.x = bg.width / 2 - txtTitle.width / 2;
@@ -59,16 +59,17 @@ class Notification extends Sprite {
 
         NotificationPopup.time.start(NotificationPopup.total);
 
-        FlxTween.tween(bg, {y: -55 + bg.height + 20}, 0.2);
-        FlxTween.tween(txtTitle, {y: -55 + bg.height + 20}, 0.2);
-        FlxTween.tween(txtInfo, {y: -55 + bg.height + (bg.height / 2 + 20)}, 0.2, {onComplete: function(t:FlxTween)
+        var targetY:Float = -25;
+        FlxTween.tween(bg, {y: targetY + bg.height + 20}, 0.2, {ease: FlxEase.quartOut});
+        FlxTween.tween(txtTitle, {y: targetY + bg.height + 20}, 0.2, {ease: FlxEase.quartOut});
+        FlxTween.tween(txtInfo, {y: targetY + bg.height + (bg.height / 2 + 30)}, 0.2, {ease: FlxEase.quartOut, onComplete: function(t:FlxTween)
         {
-            FlxTween.tween(bg, {y: -55 - bg.height}, 0.2, {startDelay: 1.5});
-            FlxTween.tween(txtTitle, {y: -55 - bg.height}, 0.2, {startDelay: 1.5});
-            FlxTween.tween(txtInfo, {y: -55 - bg.height + (bg.height / 2)}, 0.2, {startDelay: 1.5, onComplete: function(t:FlxTween){ removeChildren(); }});
+            FlxTween.tween(bg, {y: targetY - bg.height}, 0.2, {ease: FlxEase.quartOut, startDelay: 1.5});
+            FlxTween.tween(txtTitle, {y: targetY - bg.height}, 0.2, {ease: FlxEase.quartOut, startDelay: 1.5});
+            FlxTween.tween(txtInfo, {y: targetY - bg.height + (bg.height / 2)}, 0.2, {ease: FlxEase.quartOut, startDelay: 1.5, onComplete: function(t:FlxTween){ removeChildren(); }});
         }});
 
-        x = FlxG.width / 2 - width / 2;
+        x = 25;
     }
 }
 
