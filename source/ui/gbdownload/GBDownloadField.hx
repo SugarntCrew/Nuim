@@ -1,5 +1,6 @@
 package ui.gbdownload;
 
+import backend.Constants;
 import sys.thread.Thread;
 import backend.FileUtils;
 import backend.ZipUtils;
@@ -18,6 +19,7 @@ class GBDownloadField extends FlxSpriteGroup
     public var downloadButton:Button;
     public var parent:GBDownloadBoard;
     public var mainThread:Thread;
+    public var isSupported:Bool = true;
 
     public var bg:FlxSprite;
     public var fileNameTxt:FlxText;
@@ -142,5 +144,17 @@ class GBDownloadField extends FlxSpriteGroup
                 });
             });
         }
+    }
+
+    public function isSupportedBuild(?fileData:Dynamic):Bool
+    {
+        var index = fileData._sFile.lastIndexOf('.');
+        var extension = fileData._sFile.substr(index, fileData._sFile.length);
+        trace('is $extension supported?');
+        for(name in Constants.supportedBuildExtensions)
+        {
+            if(name == extension) return true;
+        }
+        return false;
     }
 }

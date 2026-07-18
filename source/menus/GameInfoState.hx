@@ -510,7 +510,7 @@ class GameInfoState extends Substate
                         releaseText.text = '$releaseYear';
                     }
 
-                    gbDownloadBoard.refresh(msg.files, main);
+                    gbDownloadBoard?.refresh(msg.files, main);
 
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.gamebananaAPIimage('cache/games/portal/${msg.modId}/image0'),

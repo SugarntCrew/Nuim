@@ -14,6 +14,7 @@ class GBDownloadBoard extends FlxSpriteGroup
     
     public var background:FlxSprite;
     public var boardBackground:FlxSprite;
+    public var noBuildsAvaiableText:FlxText;
     public var buildFilesFieldGrp:FlxTypedGroup<GBDownloadField>;
     public function new(x:Float = 0, y:Float = 0, ?_stateParent:Dynamic, _data:Dynamic)
     {
@@ -34,6 +35,12 @@ class GBDownloadBoard extends FlxSpriteGroup
         boardBackground.screenCenter();
         boardBackground.y += 60;
         add(boardBackground);
+
+        noBuildsAvaiableText = new FlxText(0, 0, boardBackground.width - 20, 'There are no supported builds for this mod :(');
+        noBuildsAvaiableText.x += 10;
+        noBuildsAvaiableText.setFormat(Paths.font('advent_pro'), 25, 0xFFE7E7E7, LEFT);
+        noBuildsAvaiableText.visible = false;
+        add(noBuildsAvaiableText);
 
         buildFilesFieldGrp = new FlxTypedGroup<GBDownloadField>();
     }
@@ -85,16 +92,38 @@ class GBDownloadBoard extends FlxSpriteGroup
 
     public function refresh(_filesData:Dynamic, _mainThread:Thread)
     {
+        buildFilesFieldGrp.forEach(function(obj) obj.destroy());
+        buildFilesFieldGrp.clear();
+        
         trace(_filesData);
         filesData = _filesData;
 
-        for(num => file in cast(filesData, Array<Dynamic>))
+        var num:Int = 0;
+        for(file in cast(filesData, Array<Dynamic>))
         {
             var field = new GBDownloadField(boardBackground.x + 20, 0, boardBackground.width - 40, 140, file, data, this, _mainThread);
+            if(!field.isSupportedBuild(file)) 
+            {
+                field.isSupported = false;
+                continue;
+            }
             field.y = boardBackground.y + 20 + (num * (field.height + 10));
             field.alpha = 0;
             add(field);
             buildFilesFieldGrp.add(field);
+
+            num++;
         }
+
+        noBuildsAvaiableText.visible = !hasSupportedFieldBuilds();
+    }
+
+    function hasSupportedFieldBuilds():Bool
+    {
+        for(field in buildFilesFieldGrp)
+        {
+            if(field.isSupported) return true;
+        }
+        return false;
     }
 }
