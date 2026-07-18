@@ -199,18 +199,21 @@ class GameInfoState extends Substate
         gbDownloadBg.makeGraphic(620, 88, 0xFF000000);
         gbDownloadBg.alpha = 0.65;
         gbDownloadBg.visible = false;
+        gbDownloadBg.alpha = 0;
         add(gbDownloadBg);
 
         gbDownloadBar = new FlxBar(gbDownloadBg.x + 10, 0, LEFT_TO_RIGHT, Std.int(gbDownloadBg.width - 20), 5, this, 'downloadProgress', 0, 1);
         gbDownloadBar.y = gbDownloadBg.y + gbDownloadBg.height - gbDownloadBar.height - 10;
         gbDownloadBar.createFilledBar(0xFFA1A1A1, 0xFFE9E9E9);
         gbDownloadBar.visible = false;
+        gbDownloadBar.alpha = 0;
         add(gbDownloadBar);
 
         gbDownloadText = new FlxText(gbDownloadBg.x, 0, gbDownloadBg.width, '', 20);
         gbDownloadText.setFormat(Paths.font('advent_pro'), 25, 0xFFFFFFFF, CENTER);
         gbDownloadText.y = gbDownloadBg.y + 10;
         gbDownloadText.visible = false;
+        gbDownloadText.alpha = 0;
         add(gbDownloadText);
 
         previewImage.x = line.x + 35;
@@ -372,6 +375,9 @@ class GameInfoState extends Substate
         if(transIn)
         {
             FlxTween.tween(line, {alpha: 0.7}, duration, {ease: FlxEase.quadOut});
+            FlxTween.tween(gbDownloadBg, {alpha: 1}, duration, {ease: FlxEase.quartOut});
+            FlxTween.tween(gbDownloadBar, {alpha: 1}, duration, {ease: FlxEase.quartOut});
+            FlxTween.tween(gbDownloadText, {alpha: 1}, duration, {ease: FlxEase.quartOut});
             FlxTween.tween(titleText, {alpha: 1}, duration, {ease: FlxEase.quadOut});
             FlxTween.tween(gamebananaButton, {alpha: 1}, duration, {ease: FlxEase.quadOut});
             FlxTween.tween(playButton, {alpha: 1}, duration, {ease: FlxEase.quadOut});
