@@ -1,5 +1,7 @@
 package;
 
+import ui.notification.Notification.NotificationPopup;
+
 class Main extends Sprite
 {
     public var game = {
@@ -9,6 +11,8 @@ class Main extends Sprite
         fps: 60,
         skipSplash: true
     }
+
+	public static var notificationPopup:NotificationPopup;
 
 	public function new()
 	{
@@ -21,5 +25,8 @@ class Main extends Sprite
 		addChild(game);
         
         FlxG.autoPause = false;
+
+		notificationPopup = new NotificationPopup();
+		addChild(notificationPopup);
 	}
 }

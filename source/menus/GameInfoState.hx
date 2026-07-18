@@ -90,6 +90,8 @@ class GameInfoState extends Substate
         super.create();
         trace('Substate opened!');
 
+		Main.notificationPopup.popUpNotification('notification/default', 'Success!', 'Game successfully started!');
+
         main = Thread.current();
 
         previewImage = new FlxSprite();
