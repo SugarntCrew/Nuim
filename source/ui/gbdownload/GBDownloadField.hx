@@ -84,7 +84,7 @@ class GBDownloadField extends FlxSpriteGroup
                 var extension = fileData._sFile.substr(index, fileData._sFile.length);
                 trace(extension);
 
-                GamebananaAPI.downloadGamebananaBuild(downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}/build', extension), onProgress, onComplete);
+                GamebananaAPI.downloadGamebananaBuild(data, downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}/build', extension), onProgress, onComplete);
             }
         }
         add(downloadButton);
@@ -95,20 +95,22 @@ class GBDownloadField extends FlxSpriteGroup
         super.update(elapsed);
     }
 
-    function onProgress(loaded:Float, total:Float)
+    function onProgress(id:String, loaded:Float, total:Float)
     {
         mainThread.sendMessage({
             type: 'build_download_progress',
+            modId: id,
             loaded: loaded,
             total: total,
             progress: loaded / total
         });
     }
 
-    function onComplete(path:String)
+    function onComplete(id:String, path:String)
     {
         mainThread.sendMessage({
-            type: 'build_download_success'
+            type: 'build_download_success',
+            modId: id
         });
 
         if(StringTools.endsWith(path, 'zip'))
@@ -120,7 +122,8 @@ class GBDownloadField extends FlxSpriteGroup
 
                 mainThread.sendMessage({
                     type: 'readzip_progress',
-                    loaded: loaded
+                    modId: id,
+                    loaded: loaded,
                 });
             },
             function(loaded, total, writtenBytes) // unzip
@@ -129,6 +132,7 @@ class GBDownloadField extends FlxSpriteGroup
 
                 mainThread.sendMessage({
                     type: 'unzip_progress',
+                    modId: id,
                     loaded: loaded,
                     total: total,
                     progress: loaded / total,
@@ -140,7 +144,8 @@ class GBDownloadField extends FlxSpriteGroup
                 trace("Sending unzip_complete");
 
                 mainThread.sendMessage({
-                    type: 'unzip_complete'
+                    type: 'unzip_complete',
+                    modId: id
                 });
             });
         }

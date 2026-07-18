@@ -488,9 +488,12 @@ class GameInfoState extends Substate
         while(msg != null)
         {
             if(!subAlive) break;
+
             switch(msg.type)
             {
                 case 'metadata_ready':
+
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
 
                     trace(msg.modId, msg.name, msg.description);
 
@@ -524,10 +527,15 @@ class GameInfoState extends Substate
 
                 case 'heroe_download':
 
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+
                     downloadProgressBar.visible = false;
                     downloadProgressText.text = 'Downloading heroe (${msg.modId})';
 
                 case 'images_ready':
+
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+
                     modId = msg.modId;
                     imageNum = msg.imageNum;
 
@@ -557,6 +565,9 @@ class GameInfoState extends Substate
                     heroe?.regenImage(heroeParams, true, true);
                     heroe?.fitToScreen();
                 case 'images_process':
+
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+
                     downloadProgressBar.visible = true;
                     downloadProgressText.visible = true;
                     downloadProgressBG.visible = true;
@@ -566,6 +577,8 @@ class GameInfoState extends Substate
 
                     downloadProgressText.text = 'Downloading images from GameBanana (${msg.imagesDownloaded}/${msg.imagesTotal})';
                 case 'build_download_progress':
+
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
 
                     var loaded = msg.loaded;
                     var total = msg.total;
@@ -583,10 +596,15 @@ class GameInfoState extends Substate
 
 		            Main.notificationPopup.popUpNotification('notification/default', 'Download successed!', 'The selected build has been downloaded');
 
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;
                     gbDownloadText.visible = false;
                 case 'readzip_progress':
+
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+
                     trace("Reading readzip_progress");
 
                     gbDownloadBg.visible = true;
@@ -595,6 +613,9 @@ class GameInfoState extends Substate
 
                     gbDownloadText.text = 'Reading zip... (${msg.loaded} entries)';
                 case 'unzip_progress':
+                    
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+
                     trace("Reading unzip_progress");
 
                     var loaded = msg.loaded;
@@ -612,6 +633,8 @@ class GameInfoState extends Substate
                 case 'unzip_complete':
 
 		            Main.notificationPopup.popUpNotification('notification/default', 'Unzip successed!', 'Game is ready to play!');
+                    
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
 
                     trace("Reading unzip_complete");
                     gbDownloadBg.visible = false;

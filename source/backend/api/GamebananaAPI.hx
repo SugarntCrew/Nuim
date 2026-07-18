@@ -117,6 +117,7 @@ class GamebananaAPI
 
                     mainThread?.sendMessage({
                         type: 'images_process',
+                        modId: id,
                         imagesDownloaded: localImageNum,
                         imagesTotal: images.length
                     });
@@ -173,7 +174,7 @@ class GamebananaAPI
         return modUrl.substr(modUrl.length - 6, modUrl.length);
     }
 
-    public static function downloadGamebananaBuild(downloadUrl:String, path:String, onProgressCallback:(loaded:Float, total:Float)->Void, onCompleteCallback:(path:String)->Void)
+    public static function downloadGamebananaBuild(_gbData:Dynamic, downloadUrl:String, path:String, onProgressCallback:(id:String, loaded:Float, total:Float)->Void, onCompleteCallback:(id:String, path:String)->Void)
     {
         //Thread.create(() -> {
             var loader:URLLoader = new URLLoader();
@@ -181,7 +182,7 @@ class GamebananaAPI
 
             loader.addEventListener(ProgressEvent.PROGRESS, function(e:ProgressEvent) 
             {
-                if(onProgressCallback != null) onProgressCallback(e.bytesLoaded, e.bytesTotal);
+                if(onProgressCallback != null) onProgressCallback(getModIdFromUrl(_gbData.gamebanana_url), e.bytesLoaded, e.bytesTotal);
                 // trace('${e.bytesLoaded}/${e.bytesTotal}');
             });
 
@@ -198,7 +199,7 @@ class GamebananaAPI
                 if(!FileSystem.exists(folderPath)) FileSystem.createDirectory(folderPath);
                 File.saveBytes(path, data);
                 
-                if(onCompleteCallback != null) onCompleteCallback(path);
+                if(onCompleteCallback != null) onCompleteCallback(getModIdFromUrl(_gbData.gamebanana_url), path);
             });
 
             loader.addEventListener(IOErrorEvent.IO_ERROR, function(e)
