@@ -13,6 +13,7 @@ import haxe.Json;
 
 class GBDownloadField extends FlxSpriteGroup
 {
+    public var onStartDownloadCallback:()->Void;
     public var data:Dynamic;
     public var fileData:Dynamic;
     public var downloadUrl:String = '';
@@ -86,6 +87,8 @@ class GBDownloadField extends FlxSpriteGroup
 
                 GamebananaAPI.downloadGamebananaBuild(data, downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}/build', extension), onProgress, onComplete);
             }
+
+            if(onStartDownloadCallback != null) onStartDownloadCallback();
         }
         add(downloadButton);
     }

@@ -7,6 +7,7 @@ import haxe.Json;
 class GBDownloadBoard extends FlxSpriteGroup
 {
     public var onHideCustomBehavior:()->Void;
+    public var onStartDownloadCallback:()->Void;
     public var isBoardOpen:Bool = false;
     public var filesData:Dynamic;
     public var parent:Dynamic;
@@ -109,6 +110,10 @@ class GBDownloadBoard extends FlxSpriteGroup
             }
             field.y = boardBackground.y + 20 + (num * (field.height + 10));
             field.alpha = 0;
+            field.onStartDownloadCallback = function()
+            {
+                if(onStartDownloadCallback != null) onStartDownloadCallback();
+            }
             add(field);
             buildFilesFieldGrp.add(field);
 

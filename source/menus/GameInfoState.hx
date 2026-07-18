@@ -160,6 +160,11 @@ class GameInfoState extends Substate
                     playButton.active = false;
                     canScroll = false;
                 });
+                gbDownloadBoard.onStartDownloadCallback = function()
+                {
+                    playButton.active = false;
+                    playButton.color = 0xFF666666;
+                }
             }
             else
             {
@@ -594,6 +599,9 @@ class GameInfoState extends Substate
                     gbDownloadBar.visible = true;
                     gbDownloadText.visible = true;
 
+                    playButton.color = 0xFF666666;
+                    playButton.active = false;
+
                     var textLoaded = '${BytesUtil.formatBytes(loaded)}';
                     var textTotal = '${BytesUtil.formatBytes(total)}';
                     gbDownloadText.text = '$textLoaded / $textTotal';
@@ -607,9 +615,15 @@ class GameInfoState extends Substate
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;
                     gbDownloadText.visible = false;
+
+                    playButton.color = 0xFFFFFFFF;
+                    playButton.active = true;
                 case 'readzip_progress':
 
                     if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    
+                    playButton.color = 0xFF666666;
+                    playButton.active = false;
 
                     trace("Reading readzip_progress");
 
@@ -622,7 +636,10 @@ class GameInfoState extends Substate
                     
                     if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
 
-                    trace("Reading unzip_progress");
+                    // trace("Reading unzip_progress");
+
+                    playButton.color = 0xFF666666;
+                    playButton.active = false;
 
                     var loaded = msg.loaded;
                     var total = msg.total;
@@ -642,7 +659,11 @@ class GameInfoState extends Substate
                     
                     if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
 
-                    trace("Reading unzip_complete");
+                    // trace("Reading unzip_complete");
+                    
+                    playButton.color = 0xFFFFFFFF;
+                    playButton.active = true;
+
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;
                     gbDownloadText.visible = false;
