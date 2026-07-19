@@ -1,5 +1,6 @@
 package backend;
 
+import backend.api.GamebananaAPI;
 import sys.FileSystem;
 
 class Paths
@@ -38,5 +39,29 @@ class Paths
     public inline static function gamebananaDownload(path:String, extension:String):String
     {
         return 'assets/data/builds/$path.$extension';
+    }
+
+    public inline static function exeBuild(data:Dynamic):String
+    {
+        var modId = GamebananaAPI.getModIdFromUrl(data.gamebanana_url);
+        var buildFiles = FileUtils.analyseFolder('assets/data/builds/$modId/build', true);
+        // trace(buildFiles);
+        var exeFileLocation:String = '';
+        for(file in buildFiles)
+        {
+            if(!file.endsWith('.exe')) continue;
+
+            exeFileLocation = file;
+            break;
+        }
+
+        if(exeFileLocation == '') 
+        {
+            trace('$exeFileLocation ¿?¿?¿?¿?¿?¿?¿');
+            return null;
+        }
+
+        trace('$exeFileLocation');
+        return '$exeFileLocation';
     }
 }

@@ -1,5 +1,6 @@
 package backend;
 
+import haxe.io.Path;
 import sys.FileSystem;
 
 class FileUtils
@@ -11,7 +12,11 @@ class FileUtils
 
     public static function analyseFolder(path:String, ?includeSubfolders:Bool = false):Array<String>
     {
-        if(!FileSystem.exists(path)) return [];
+        if(!FileSystem.exists(path)) 
+        {
+            trace('Could not analyse folder!');
+            return [];
+        }
 
         try 
         {
@@ -20,12 +25,18 @@ class FileUtils
             {
                 for(file in files)
                 {
-                    if(FileSystem.isDirectory('$path/$file')) 
+                    var folderPath = Path.join([path, file]);
+                    if(FileSystem.isDirectory(folderPath)) 
                     {
-                        for(file in analyseFolder(path + file))
+                        var directory = Path.addTrailingSlash(folderPath);
+                        for(file in analyseFolder(directory, includeSubfolders))
                         {
-                            files.push(file);
+                            files.push('$folderPath/$file');
                         }
+                    }
+                    else
+                    {
+                        #if debug trace('Detected file: $folderPath/$file'); #end
                     }
                 }
             }

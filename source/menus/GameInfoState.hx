@@ -151,8 +151,7 @@ class GameInfoState extends Substate
         }
         playButton.onClickCallback = function(data, ?customBehavior)
         {
-            // NOTE: THIS ALSO HAS TO INCLUDE IF THE BUILD IS ALREADY DOWNLOADED TO SKIP THIS AND OPEN THE GAME EVEN THOUGH OF THE GAMEBANANA URL
-            if(data.gamebanana_url != null)
+            if(data.gamebanana_url != null && !isBuildInstalled())
             {
                 gbDownloadBoard.active = true;
                 gbDownloadBoard.show(0.9, function()
@@ -168,7 +167,7 @@ class GameInfoState extends Substate
             }
             else
             {
-                var location:String = data.game_location;
+                var location:String = data.gamebanana_url == null ? data.game_location : Paths.exeBuild(data);
                 
                 if(!FileSystem.exists(location)) return;
 
@@ -196,8 +195,7 @@ class GameInfoState extends Substate
             }
         }
         playButton.alpha = 0;
-        // TODO: change image only if build does not exist
-        if(data.gamebanana_url != null) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
+        if(data.gamebanana_url != null && !isBuildInstalled()) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
         add(playButton);
 
         gbDownloadBg = new FlxSprite(playButton.x + playButton.width + 10, playButton.y + 4.5);
@@ -663,6 +661,7 @@ class GameInfoState extends Substate
                     
                     playButton.color = 0xFFFFFFFF;
                     playButton.active = true;
+                    playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/playGame'));
 
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;
@@ -848,5 +847,13 @@ class GameInfoState extends Substate
         downloadProgressText.y = playButton.y + playButton.height + 70;
         downloadProgressBar.y = downloadProgressText.y + downloadProgressText.height + 20;
         downloadProgressBG.y = downloadProgressText.y - 25;
+    }
+
+    function isBuildInstalled():Bool
+    {
+        var path = Paths.exeBuild(data);
+        var exists = FileSystem.exists(path);
+        trace('Build exist? $exists');
+        return exists;
     }
 }
