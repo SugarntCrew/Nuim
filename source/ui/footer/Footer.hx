@@ -18,4 +18,17 @@ class Footer extends FlxSpriteGroup
         footerBackground.loadGraphic(Paths.image('ui/footer/bg'));
         add(footerBackground);
     }
+
+    override function update(elapsed:Float) 
+    {
+        super.update(elapsed);
+        
+        if(FlxG.mouse.overlaps(addGameButton, FlxG.cameras.list[FlxG.cameras.list.length-1]))
+        {
+            if(FlxG.mouse.justPressed)
+            {
+                trace('Open add game tab');
+            }
+        }
+    }
 }

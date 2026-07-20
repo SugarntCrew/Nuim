@@ -214,6 +214,11 @@ class MainState extends State
         var mult = FlxMath.lerp(mainCam.scroll.y, targetScrollY, elapsed * 12);
         mainCam.scroll.set(0, mult);
 
+        for(grid in gridsGrp)
+        {
+            grid.overlapable = !(FlxG.mouse.getWorldPosition(FlxG.cameras.list[FlxG.cameras.list.length-1]).y > 955);
+        }
+
         if(FlxG.mouse.wheel != 0)
         {
             if(FlxG.mouse.wheel > 0) 

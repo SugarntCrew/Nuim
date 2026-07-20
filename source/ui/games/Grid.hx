@@ -11,6 +11,7 @@ class Grid extends FlxSpriteGroup implements IClickable
     public var data:GameData;
     public var gridName:String;
     public var gridImageName:String;
+    public var overlapable:Bool = true;
 
     public var gridImageBlur:FlxSprite;
     public var gridImage:FlxSprite;
@@ -73,7 +74,7 @@ class Grid extends FlxSpriteGroup implements IClickable
         var mult = FlxMath.lerp(scale.x, targetScale, elapsed * scaleSpeed);
         scale.set(mult, mult);
 
-        if(FlxG.mouse.overlaps(gridImage))
+        if(FlxG.mouse.overlaps(gridImage) && overlapable)
         {
             _onUnhover = true;
             if(_onHover) 
