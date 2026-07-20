@@ -158,7 +158,7 @@ class GBDownloadField extends FlxSpriteGroup
     {
         var index = fileData._sFile.lastIndexOf('.');
         var extension = fileData._sFile.substr(index, fileData._sFile.length);
-        trace('is $extension supported?');
+        // trace('is $extension supported?');
         for(name in Constants.supportedBuildExtensions)
         {
             if(name == extension) return true;

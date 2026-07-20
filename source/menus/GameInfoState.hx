@@ -504,7 +504,7 @@ class GameInfoState extends Substate
 
                     if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
 
-                    trace(msg.modId, msg.name, msg.description);
+                    // trace(msg.modId, msg.name, msg.description);
 
                     titleText.text = msg.name ?? data.name;
                     descriptionText.text = msg.description ?? (data.description ?? 'No description provided.');
@@ -513,11 +513,11 @@ class GameInfoState extends Substate
                     var releaseDate = msg.date_added ?? (data.release ?? 'Unknown');
                     if(releaseDate != null)
                     {
-                        trace('Release date is $releaseDate');
+                        // trace('Release date is $releaseDate');
                         var convertRelease = DateUtils.convertMsToDate(Std.parseFloat(releaseDate));
-                        trace('Release date converted is ${convertRelease}');
+                        // trace('Release date converted is ${convertRelease}');
                         var releaseYear = convertRelease.getFullYear();
-                        trace('Year = $releaseYear');
+                        // trace('Year = $releaseYear');
 
                         releaseText.text = '$releaseYear';
                     }

@@ -96,7 +96,7 @@ class GBDownloadBoard extends FlxSpriteGroup
         buildFilesFieldGrp.forEach(function(obj) obj.destroy());
         buildFilesFieldGrp.clear();
         
-        trace(_filesData);
+        // trace(_filesData);
         filesData = _filesData;
 
         var num:Int = 0;
