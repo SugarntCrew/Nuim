@@ -183,15 +183,27 @@ class GameInfoState extends Substate
                 trace(appName);
                 trace(path);
 
-                Sys.setCwd(path);
+                // Sys.setCwd(path);
+                #if sys
+                    var launcherPathInDisk = Sys.programPath();
+                    var disk:String = launcherPathInDisk.substr(2, 0); //THAT SO FIRE
+                    var nuimFolderPath:String = launcherPathInDisk.replace("Nuim.exe", "");
+                    var fullGamePath:String = nuimFolderPath + path;
+                    trace('FULL PATH ON DISK: $fullGamePath');
 
-                var process = new Process('start $appName');
-                if(process.exitCode() == 0)
-                {
-                    trace('Reset path to launcher');
-                    Sys.setCwd(Constants.LAUNCHER_PATH);
-                }
-                process.close();
+                    // var cmd = 'cmd /c $disk & cd "$fullGamePath" & start "" "$appName" & exit';
+                    FlxG.sound.music.fadeOut(0.8);
+                    Thread.create(() -> {
+                        Sys.setCwd(fullGamePath);
+                        var process = new Process(exeName);
+                        process.exitCode(); // are you waiting till game exits?
+                        process.close();
+
+                        main.sendMessage({
+                            type: "game_closed"
+                        });
+                    });
+                #end
             }
         }
         playButton.alpha = 0;
@@ -666,6 +678,11 @@ class GameInfoState extends Substate
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;
                     gbDownloadText.visible = false;
+                case 'game_closed':
+
+                    trace('GAME CLOSED!!!!!');
+
+                    FlxG.sound.music.fadeIn(0.8);
                 default:
             }
 

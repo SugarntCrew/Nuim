@@ -12,40 +12,28 @@ class FileUtils
 
     public static function analyseFolder(path:String, ?includeSubfolders:Bool = false):Array<String>
     {
-        if(!FileSystem.exists(path)) 
-        {
-            trace('Could not analyse folder!');
-            return [];
-        }
+        var result = [];
 
-        try 
+        if (!FileSystem.exists(path))
+            return result;
+
+        for (entry in FileSystem.readDirectory(path))
         {
-            var files = FileSystem.readDirectory(path);
-            if(includeSubfolders)
+            var fullPath = Path.join([path, entry]);
+
+            if (FileSystem.isDirectory(fullPath))
             {
-                for(file in files)
+                if (includeSubfolders)
                 {
-                    var folderPath = Path.join([path, file]);
-                    if(FileSystem.isDirectory(folderPath)) 
-                    {
-                        var directory = Path.addTrailingSlash(folderPath);
-                        for(file in analyseFolder(directory, includeSubfolders))
-                        {
-                            files.push('$folderPath/$file');
-                        }
-                    }
-                    else
-                    {
-                        #if debug trace('Detected file: $folderPath/$file'); #end
-                    }
+                    result = result.concat(analyseFolder(fullPath, true));
                 }
             }
-            return files;
+            else
+            {
+                result.push(fullPath);
+            }
         }
-        catch(exc)
-        {
-            trace('ERROR analysing folder. ($exc)');
-            return [];
-        }
+
+        return result;
     }
 }
