@@ -1,5 +1,6 @@
 package menus;
 
+import backend.api.ApiTools;
 import backend.BytesUtil;
 import ui.gbdownload.GBDownloadBoard;
 import ui.header.DateText;
@@ -79,7 +80,7 @@ class GameInfoState extends Substate
 
         data = _data;
         camReference = _camReference;
-        hasGbLink = data.url != null;
+        hasGbLink = data.url != null && (ApiTools.getTargetApiWithUrl(data.url) == GAMEBANANA);
 
         trace('GAMEBANANA LINK PRESENCE IS $hasGbLink');
     }

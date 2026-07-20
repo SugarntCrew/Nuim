@@ -94,6 +94,13 @@ class GameGrid
             grid_image: 'teto',
             heroe_image: 'teto',
             url: 'https://gamebanana.com/mods/479317',
+        },
+        {
+            name: "Mr. Tronco ",
+            game_location: "",
+            grid_image: 'teto',
+            heroe_image: 'teto',
+            url: 'https://gamebanana.com/mods/436927',
         }
     ];
 }
