@@ -13,7 +13,7 @@ typedef GameData =
     @:optional var genre:String;
     @:optional var release:String;
     @:optional var version:String;
-    @:optional var gamebanana_url:String;
+    @:optional var url:String; // this can be api url or fnf mod url in some cases
 }
 
 class GameGrid
@@ -46,7 +46,7 @@ class GameGrid
             genre: 'Rythm',
             release: '2026',
             version: 'v2.0.1',
-            gamebanana_url: 'https://gamebanana.com/mods/586813'
+            url: 'https://gamebanana.com/mods/586813'
         },
         {
             name: "+2 Billetes",
@@ -60,40 +60,40 @@ class GameGrid
         {
             name: "Infected Beats",
             game_location: "",
-            gamebanana_url: 'https://gamebanana.com/mods/473596'
+            url: 'https://gamebanana.com/mods/473596'
         },
         {
             name: "Springfunked",
             game_location: "",
-            gamebanana_url: 'https://gamebanana.com/mods/615034'
+            url: 'https://gamebanana.com/mods/615034'
         },
         {
             name: "Prange Guy",
             game_location: "",
             grid_image: 'prange',
             heroe_image: 'prange',
-            gamebanana_url: 'https://gamebanana.com/mods/693558',
+            url: 'https://gamebanana.com/mods/693558',
         },
         {
             name: "VS Gameoverse",
             game_location: "",
             grid_image: 'gameoverse',
             heroe_image: 'gameoverse',
-            gamebanana_url: 'https://gamebanana.com/mods/680661',
+            url: 'https://gamebanana.com/mods/680661',
         },
         {
             name: "VS Teto",
             game_location: "",
             grid_image: 'teto',
             heroe_image: 'teto',
-            gamebanana_url: 'https://gamebanana.com/mods/669566',
+            url: 'https://gamebanana.com/mods/669566',
         },
         {
             name: "gBvNeverEvers",
             game_location: "",
             grid_image: 'teto',
             heroe_image: 'teto',
-            gamebanana_url: 'https://gamebanana.com/mods/479317',
+            url: 'https://gamebanana.com/mods/479317',
         }
     ];
 }

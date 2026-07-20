@@ -43,7 +43,7 @@ class Paths
 
     public inline static function exeBuild(data:Dynamic):String
     {
-        var modId = GamebananaAPI.getModIdFromUrl(data.gamebanana_url);
+        var modId = GamebananaAPI.getModIdFromUrl(data.url);
         var buildFiles = FileUtils.analyseFolder('assets/data/builds/$modId/build', true);
         // trace(buildFiles);
         var exeFileLocation:String = '';

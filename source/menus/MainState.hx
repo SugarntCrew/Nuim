@@ -119,7 +119,7 @@ class MainState extends State
                 var heroeParams:HeroeParams = {
                     imagePath: Paths.image('games/heroes/${data.heroe_image}'),
                     bitmapDataLoad: false,
-                    apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}_heroe')
+                    apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.url)}_heroe')
                 }
                 heroe?.onEnterGame(heroeParams, 0.65);
                 FlxG.sound.play(Paths.sound('acceptSfx'));
@@ -169,7 +169,7 @@ class MainState extends State
                     var heroeParams:HeroeParams = {
                         imagePath: Paths.image('games/heroes/${data.heroe_image}'),
                         bitmapDataLoad: false,
-                        apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}_heroe')
+                        apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.url)}_heroe')
                     }
                     heroe.regenImage(heroeParams);
                 }
@@ -247,7 +247,7 @@ class MainState extends State
         var heroeParams:HeroeParams = {
             imagePath: Paths.image('games/heroes/${lastData.heroe_image}'),
             bitmapDataLoad: false,
-            apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(lastData.gamebanana_url)}_heroe')
+            apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(lastData.url)}_heroe')
         }
         heroe?.regenImage(heroeParams, true, true);
         heroe?.fitToScreen();

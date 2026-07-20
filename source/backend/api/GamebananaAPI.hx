@@ -182,7 +182,7 @@ class GamebananaAPI
 
             loader.addEventListener(ProgressEvent.PROGRESS, function(e:ProgressEvent) 
             {
-                if(onProgressCallback != null) onProgressCallback(getModIdFromUrl(_gbData.gamebanana_url), e.bytesLoaded, e.bytesTotal);
+                if(onProgressCallback != null) onProgressCallback(getModIdFromUrl(_gbData.url), e.bytesLoaded, e.bytesTotal);
                 // trace('${e.bytesLoaded}/${e.bytesTotal}');
             });
 
@@ -199,7 +199,7 @@ class GamebananaAPI
                 if(!FileSystem.exists(folderPath)) FileSystem.createDirectory(folderPath);
                 File.saveBytes(path, data);
                 
-                if(onCompleteCallback != null) onCompleteCallback(getModIdFromUrl(_gbData.gamebanana_url), path);
+                if(onCompleteCallback != null) onCompleteCallback(getModIdFromUrl(_gbData.url), path);
             });
 
             loader.addEventListener(IOErrorEvent.IO_ERROR, function(e)

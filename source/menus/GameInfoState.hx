@@ -79,7 +79,7 @@ class GameInfoState extends Substate
 
         data = _data;
         camReference = _camReference;
-        hasGbLink = data.gamebanana_url != null;
+        hasGbLink = data.url != null;
 
         trace('GAMEBANANA LINK PRESENCE IS $hasGbLink');
     }
@@ -97,7 +97,7 @@ class GameInfoState extends Substate
         var heroeParams:HeroeParams = {
             imagePath: Paths.image('games/heroes/${data.heroe_image}'),
             bitmapDataLoad: false,
-            apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}_heroe')
+            apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.url)}_heroe')
         }
         heroe = new Heroe(0, 0, heroeParams, true);
         heroe?.fitToScreen();
@@ -140,7 +140,7 @@ class GameInfoState extends Substate
         gamebananaButton.onClickCallback = function(data, ?customBehavior)
         {
             if(!hasGbLink) return;
-            FlxG.openURL(data.gamebanana_url);
+            FlxG.openURL(data.url);
         }
         add(gamebananaButton);
 
@@ -151,7 +151,7 @@ class GameInfoState extends Substate
         }
         playButton.onClickCallback = function(data, ?customBehavior)
         {
-            if(data.gamebanana_url != null && !isBuildInstalled())
+            if(data.url != null && !isBuildInstalled())
             {
                 gbDownloadBoard.active = true;
                 gbDownloadBoard.show(0.9, function()
@@ -167,7 +167,7 @@ class GameInfoState extends Substate
             }
             else
             {
-                var location:String = data.gamebanana_url == null ? data.game_location : Paths.exeBuild(data);
+                var location:String = data.url == null ? data.game_location : Paths.exeBuild(data);
                 
                 if(!FileSystem.exists(location)) return;
 
@@ -207,7 +207,7 @@ class GameInfoState extends Substate
             }
         }
         playButton.alpha = 0;
-        if(data.gamebanana_url != null && !isBuildInstalled()) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
+        if(data.url != null && !isBuildInstalled()) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
         add(playButton);
 
         gbDownloadBg = new FlxSprite(playButton.x + playButton.width + 10, playButton.y + 4.5);
@@ -514,7 +514,7 @@ class GameInfoState extends Substate
             {
                 case 'metadata_ready':
 
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     // trace(msg.modId, msg.name, msg.description);
 
@@ -548,14 +548,14 @@ class GameInfoState extends Substate
 
                 case 'heroe_download':
 
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     downloadProgressBar.visible = false;
                     downloadProgressText.text = 'Downloading heroe (${msg.modId})';
 
                 case 'images_ready':
 
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     modId = msg.modId;
                     imageNum = msg.imageNum;
@@ -587,7 +587,7 @@ class GameInfoState extends Substate
                     heroe?.fitToScreen();
                 case 'images_process':
 
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     downloadProgressBar.visible = true;
                     downloadProgressText.visible = true;
@@ -599,7 +599,7 @@ class GameInfoState extends Substate
                     downloadProgressText.text = 'Downloading images from GameBanana (${msg.imagesDownloaded}/${msg.imagesTotal})';
                 case 'build_download_progress':
 
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     var loaded = msg.loaded;
                     var total = msg.total;
@@ -620,7 +620,7 @@ class GameInfoState extends Substate
 
 		            Main.notificationPopup.popUpNotification('notification/default', 'Download successed!', 'The selected build has been downloaded');
 
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     gbDownloadBg.visible = false;
                     gbDownloadBar.visible = false;
@@ -630,7 +630,7 @@ class GameInfoState extends Substate
                     playButton.active = true;
                 case 'readzip_progress':
 
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
                     
                     playButton.color = 0xFF666666;
                     playButton.active = false;
@@ -644,7 +644,7 @@ class GameInfoState extends Substate
                     gbDownloadText.text = 'Reading zip... (${msg.loaded} entries)';
                 case 'unzip_progress':
                     
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     // trace("Reading unzip_progress");
 
@@ -667,7 +667,7 @@ class GameInfoState extends Substate
 
 		            Main.notificationPopup.popUpNotification('notification/default', 'Unzip successed!', 'Game is ready to play!');
                     
-                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.gamebanana_url)) break;
+                    if(msg.modId != GamebananaAPI.getModIdFromUrl(data.url)) break;
 
                     // trace("Reading unzip_complete");
                     
@@ -733,12 +733,12 @@ class GameInfoState extends Substate
             download: true,
             replace: false
         }
-        GamebananaAPI.fetchImages(data.gamebanana_url, main, downloadParams);
+        GamebananaAPI.fetchImages(data.url, main, downloadParams);
 
         /*
         Thread.create(() -> {
             var localImageNum:Int = 0;
-            GamebananaAPI.requestData(data.gamebanana_url, [IMAGES], function(apiData, id)
+            GamebananaAPI.requestData(data.url, [IMAGES], function(apiData, id)
             {
                 // trace(apiData);
                 var images = apiData._aPreviewMedia._aImages;
@@ -778,7 +778,7 @@ class GameInfoState extends Substate
     {
         /*
         Thread.create(() -> {
-            GamebananaAPI.requestData(data.gamebanana_url, propierties, function(apiData, id)
+            GamebananaAPI.requestData(data.url, propierties, function(apiData, id)
             {
                 main.sendMessage({
                     type: 'metadata_ready',
@@ -790,7 +790,7 @@ class GameInfoState extends Substate
         });
         */
 
-        GamebananaAPI.fetchData(data.gamebanana_url, propierties, main);
+        GamebananaAPI.fetchData(data.url, propierties, main);
     }
 
     function reloadImages(image:String)

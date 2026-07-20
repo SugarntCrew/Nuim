@@ -85,7 +85,7 @@ class GBDownloadField extends FlxSpriteGroup
                 var extension = fileData._sFile.substr(index, fileData._sFile.length);
                 trace(extension);
 
-                GamebananaAPI.downloadGamebananaBuild(data, downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.gamebanana_url)}/build', extension), onProgress, onComplete);
+                GamebananaAPI.downloadGamebananaBuild(data, downloadUrl, Paths.gamebananaDownload('${GamebananaAPI.getModIdFromUrl(data.url)}/build', extension), onProgress, onComplete);
             }
 
             if(onStartDownloadCallback != null) onStartDownloadCallback();
