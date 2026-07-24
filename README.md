@@ -2,9 +2,6 @@
 
 Gamebanana mods launcher
 
-> [!NOTE]
-> This does not include any game. It's just an application to launch.
-
 ## Aim of this project
 The main objective is to create a simple frontend to launch games which allows customizable profiles, time-track and some features which will come to my mind in the future
 
