@@ -191,8 +191,11 @@ class MainState extends State
         FlxTween.tween(heroeGradient, {alpha: 1}, 0.65, {ease: FlxEase.quartOut});
     }
 
+    var prevHeight:Float = 0;
     function refreshGrids()
     {
+        totalGameRows = 0;
+
         var numX:Int = 0;
         var numY:Int = -1;
         for(i in 0...GameGrid.games.length)
@@ -292,7 +295,13 @@ class MainState extends State
         boardBackground.makeGraphic(1572, Std.int(480 * totalGameRows) + 110, 0xFF000000);
         boardBackground.screenCenter(X);
         boardBackground.alpha = 0.45;
-        boardBackground.alpha = 0;
+        if(prevHeight != boardBackground.height) 
+        {
+            prevHeight = boardBackground.height;
+            boardBackground.alpha = 0;
+        }
         boardBackground.y = board.y + board.height;
+
+        FlxTween.tween(boardBackground, {alpha: 0.45}, 0.65, {ease: FlxEase.quartOut});
     }
 }

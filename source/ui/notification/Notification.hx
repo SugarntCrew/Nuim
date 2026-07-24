@@ -69,7 +69,8 @@ class Notification extends Sprite {
             FlxTween.tween(txtInfo, {y: targetY - bg.height + (bg.height / 2)}, 0.2, {ease: FlxEase.quartOut, startDelay: 1.5, onComplete: function(t:FlxTween){ removeChildren(); }});
         }});
 
-        x = 25;
+        // x = 100;
+        x = FlxG.width / 2 - width / 2;
     }
 }
 

@@ -7,7 +7,8 @@ import flixel.util.FlxColor;
 class AddGameBoard extends FlxSpriteGroup
 {
     public var bg:FlxSprite;
-    public var gamebananaUrl:FlxUITextInput;
+    public var nameInput:FlxUITextInput;
+    public var gamebananaUrlInput:FlxUITextInput;
     public var addGameButton:Button;
 
     public var onAddGame:()->Void;
@@ -24,16 +25,27 @@ class AddGameBoard extends FlxSpriteGroup
 
         FlxTween.tween(bg, {alpha: 0.8}, 0.9, {ease: FlxEase.quartOut});
 
-        gamebananaUrl = new FlxUITextInput(0, 0, 550, '');
-        gamebananaUrl.tf.setFormat(Paths.font('advent_pro'), 22, 0xFF302D2D, LEFT);
-        gamebananaUrl.focus = true;
-        //gamebananaUrl.screenCenter(X);
-        gamebananaUrl.x = bg.x + 15;
-        gamebananaUrl.y = bg.y + 15;
-        gamebananaUrl.alpha = 0;
-        add(gamebananaUrl);
+        nameInput = new FlxUITextInput(0, 0, 350, '');
+        nameInput.tf.setFormat(Paths.font('advent_pro'), 22, 0xFF302D2D, LEFT);
+        nameInput.focus = true;
+        //nameInput.screenCenter(X);
+        nameInput.x = bg.x + 15;
+        nameInput.y = bg.y + 15;
+        nameInput.alpha = 0;
+        add(nameInput);
 
-        FlxTween.tween(gamebananaUrl, {alpha: 1}, 0.9, {ease: FlxEase.quartOut});
+        FlxTween.tween(nameInput, {alpha: 1}, 0.9, {ease: FlxEase.quartOut});
+
+        gamebananaUrlInput = new FlxUITextInput(0, 0, 550, '');
+        gamebananaUrlInput.tf.setFormat(Paths.font('advent_pro'), 22, 0xFF302D2D, LEFT);
+        gamebananaUrlInput.focus = true;
+        //gamebananaUrlInput.screenCenter(X);
+        gamebananaUrlInput.x = bg.x + 15;
+        gamebananaUrlInput.y = nameInput.y + nameInput.height + 15;
+        gamebananaUrlInput.alpha = 0;
+        add(gamebananaUrlInput);
+
+        FlxTween.tween(gamebananaUrlInput, {alpha: 1}, 0.9, {ease: FlxEase.quartOut});
 
         addGameButton = new Button(0, bg.y + bg.height - 130, null, _refCam);
         addGameButton.screenCenter(X);
@@ -44,9 +56,9 @@ class AddGameBoard extends FlxSpriteGroup
         addGameButton.onClickCallback = function(data, ?customBehavior)
         {
             var gameData:GameData = {
-                name: 'Whatever',
+                name: nameInput.text,
                 game_location: 'whatever',
-                url: gamebananaUrl.text
+                url: gamebananaUrlInput.text
             }
 
             GameGrid.games.push(gameData);
@@ -63,10 +75,10 @@ class AddGameBoard extends FlxSpriteGroup
     {
         super.update(elapsed);
 
-        if(gamebananaUrl != null)
+        if(gamebananaUrlInput != null)
         {
-            if(gamebananaUrl.text != '' && !StringTools.startsWith(gamebananaUrl.text, 'https://gamebanana.com/mods/')) gamebananaUrl.fieldBorderColor = FlxColor.RED;
-            else gamebananaUrl.fieldBorderColor = FlxColor.BLACK;
+            if(gamebananaUrlInput.text != '' && !StringTools.startsWith(gamebananaUrlInput.text, 'https://gamebanana.com/mods/')) gamebananaUrlInput.fieldBorderColor = FlxColor.RED;
+            else gamebananaUrlInput.fieldBorderColor = FlxColor.BLACK;
         }
     }
 }
