@@ -1,5 +1,6 @@
 package menus;
 
+import backend.Constants;
 import backend.api.GamebananaAPI;
 import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -7,8 +8,9 @@ import ui.games.Heroe;
 
 class MainState extends State
 {
-    // private (backend) vars
-    var hasExited:Bool = false;
+    public static var instance:MainState;
+    // (backend) vars
+    public var hasExited:Bool = false;
     var totalGameColumns:Float = 5;
     var totalGameRows:Float = 0;
     var lastData:GameData;
@@ -25,15 +27,17 @@ class MainState extends State
 
     var bgTransition:FlxSprite;
 
-    var mainCam:FlxCamera;
-    var hudCam:FlxCamera;
-    var gameInfoCam:FlxCamera;
+    public var mainCam:FlxCamera;
+    public var hudCam:FlxCamera;
+    public var gameInfoCam:FlxCamera;
 
     override function create()
     {
         super.create();
 
-        FlxG.sound.playMusic(Paths.music('roamingMusic'));
+        instance = this;
+
+        if(FlxG.sound.music == null || !FlxG.sound.music.playing) FlxG.sound.playMusic(Paths.music('roamingMusic'));
 
         mainCam = new FlxCamera();
         add(mainCam);
@@ -86,105 +90,7 @@ class MainState extends State
         gridsGrp = new FlxTypedGroup<Grid>();
         add(gridsGrp);
 
-        var numX:Int = 0;
-        var numY:Int = -1;
-        for(i in 0...GameGrid.games.length)
-        {
-            var grid = new Grid(0, 0, GameGrid.games[i]);
-            grid.x = board.x + 40 + (numX * (grid.gridPixelSize + 40));
-
-            if(i % totalGameColumns == 0) 
-            {
-                trace('${grid.x + grid.width} is > than ${FlxG.width}');
-                numX = 0;
-                numY++;
-
-                totalGameRows++;
-            }
-
-            grid.y = board.y + 40 + (numY * 480);
-            grid.x = board.x + 35 + (numX * (grid.gridPixelSize + 35));
-            grid.ID = i;
-
-            grid.alpha = 0;
-            FlxTween.tween(grid, {alpha: 1}, 0.3, {startDelay: 0.15});
-
-            grid.onClickCallback = function(data, ?behavior)
-            {
-                if(hasExited) return;
-                hasExited = true;
-
-                lastData = data;
-
-                var heroeParams:HeroeParams = {
-                    imagePath: Paths.image('games/heroes/${data.heroe_image}'),
-                    bitmapDataLoad: false,
-                    apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.url)}_heroe')
-                }
-                heroe?.onEnterGame(heroeParams, 0.65);
-                FlxG.sound.play(Paths.sound('acceptSfx'));
-                
-                FlxTween.tween(footer, {y: FlxG.height}, 0.65, {ease: FlxEase.quartIn});
-
-                /*
-                FlxTween.tween(FlxG.camera, {zoom: 1.3}, 0.65, {ease: FlxEase.quartIn});
-                FlxTween.tween(bgTransition, {alpha: 1}, 0.65, {ease: FlxEase.quartIn, onComplete: function(twn:FlxTween)
-                {
-                    trace('Opening substate!');
-
-                    // TODO: Open substate with more info n metadata n cool stuff
-                    openSubState(new GameInfoState(data, gameInfoCam));
-                }});
-                */
-
-                FlxTween.tween(board, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
-                FlxTween.tween(boardBackground, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
-                gridsGrp.forEach(function(grid:Grid)
-                {
-                    grid.active = false;
-                    if(grid.ID == i) FlxFlicker.flicker(grid, 0.35, 0.05, false);
-                    else FlxTween.tween(grid, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
-                });
-                FlxTween.tween(heroeGradient, {alpha: 0}, 0.65, {ease: FlxEase.quartOut, onComplete: function(twn:FlxTween)
-                {
-                    trace('Opening substate!');
-
-                    openSubState(new GameInfoState(data, gameInfoCam));
-                }});
-            }
-
-            grid.onHoverCallback = function(data)
-            {
-                timer = 0;
-                heroe.alreadyRegen = false;
-                if(!hasExited) FlxG.sound.play(Paths.sound('changeSfx'));
-            }
-
-            grid.hoverCallback = function(data)
-            {
-                // trace(data);
-                timer += FlxG.elapsed;
-                if(timer > heroe.regenTime && !heroe.alreadyRegen)
-                {
-                    var heroeParams:HeroeParams = {
-                        imagePath: Paths.image('games/heroes/${data.heroe_image}'),
-                        bitmapDataLoad: false,
-                        apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.url)}_heroe')
-                    }
-                    heroe.regenImage(heroeParams);
-                }
-            }
-
-            gridsGrp.add(grid);
-
-            numX++;
-        }
-        
-        boardBackground.makeGraphic(1572, Std.int(480 * totalGameRows) + 110, 0xFF000000);
-        boardBackground.screenCenter(X);
-        boardBackground.alpha = 0.45;
-        boardBackground.alpha = 0;
-        boardBackground.y = board.y + board.height;
+        refreshGrids();
 
         header = new Header();
         header.cameras = [hudCam];
@@ -247,20 +153,27 @@ class MainState extends State
     {
         super.closeSubState();
 
-        hasExited = false;
+        switch(Constants.closeSubstateTrans)
+        {
+            case GAMEINFO:
+                hasExited = false;
 
-        var heroeParams:HeroeParams = {
-            imagePath: Paths.image('games/heroes/${lastData.heroe_image}'),
-            bitmapDataLoad: false,
-            apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(lastData.url)}_heroe')
+                var heroeParams:HeroeParams = {
+                    imagePath: Paths.image('games/heroes/${lastData.heroe_image}'),
+                    bitmapDataLoad: false,
+                    apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(lastData.url)}_heroe')
+                }
+                heroe?.regenImage(heroeParams, true, true);
+                heroe?.fitToScreen();
+                heroe?.startPosTween();
+                FlxTween.tween(footer, {y: FlxG.height - footer.height}, 0.65, {ease: FlxEase.quartOut});
+                FlxTween.tween(FlxG.camera, {zoom: 1}, 0.65, {ease: FlxEase.quartOut});
+                FlxTween.tween(bgTransition, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+                fadeIn(true);
+            case ADDGAME:
+                hasExited = false;
+                refreshGrids();
         }
-        heroe?.regenImage(heroeParams, true, true);
-        heroe?.fitToScreen();
-        heroe?.startPosTween();
-        FlxTween.tween(footer, {y: FlxG.height - footer.height}, 0.65, {ease: FlxEase.quartOut});
-        FlxTween.tween(FlxG.camera, {zoom: 1}, 0.65, {ease: FlxEase.quartOut});
-        FlxTween.tween(bgTransition, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
-        fadeIn(true);
     }
 
     function fadeIn(onDestroy:Bool)
@@ -276,5 +189,110 @@ class MainState extends State
             FlxTween.tween(grid, {alpha: 1}, 0.65, {ease: FlxEase.quartOut});
         });
         FlxTween.tween(heroeGradient, {alpha: 1}, 0.65, {ease: FlxEase.quartOut});
+    }
+
+    function refreshGrids()
+    {
+        var numX:Int = 0;
+        var numY:Int = -1;
+        for(i in 0...GameGrid.games.length)
+        {
+            var grid = new Grid(0, 0, GameGrid.games[i]);
+            grid.x = board.x + 40 + (numX * (grid.gridPixelSize + 40));
+
+            if(i % totalGameColumns == 0) 
+            {
+                trace('${grid.x + grid.width} is > than ${FlxG.width}');
+                numX = 0;
+                numY++;
+
+                totalGameRows++;
+            }
+
+            grid.y = board.y + 40 + (numY * 480);
+            grid.x = board.x + 35 + (numX * (grid.gridPixelSize + 35));
+            grid.ID = i;
+
+            grid.alpha = 0;
+            FlxTween.tween(grid, {alpha: 1}, 0.3, {startDelay: 0.15});
+
+            grid.onClickCallback = function(data, ?behavior)
+            {
+                if(hasExited) return;
+                hasExited = true;
+
+                lastData = data;
+
+                var heroeParams:HeroeParams = {
+                    imagePath: Paths.image('games/heroes/${data.heroe_image}'),
+                    bitmapDataLoad: false,
+                    apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.url)}_heroe')
+                }
+                heroe?.onEnterGame(heroeParams, 0.65);
+                FlxG.sound.play(Paths.sound('acceptSfx'));
+
+                Constants.closeSubstateTrans = GAMEINFO;
+                
+                FlxTween.tween(footer, {y: FlxG.height}, 0.65, {ease: FlxEase.quartIn});
+
+                /*
+                FlxTween.tween(FlxG.camera, {zoom: 1.3}, 0.65, {ease: FlxEase.quartIn});
+                FlxTween.tween(bgTransition, {alpha: 1}, 0.65, {ease: FlxEase.quartIn, onComplete: function(twn:FlxTween)
+                {
+                    trace('Opening substate!');
+
+                    // TODO: Open substate with more info n metadata n cool stuff
+                    openSubState(new GameInfoState(data, gameInfoCam));
+                }});
+                */
+
+                FlxTween.tween(board, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+                FlxTween.tween(boardBackground, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+                gridsGrp.forEach(function(grid:Grid)
+                {
+                    grid.active = false;
+                    if(grid.ID == i) FlxFlicker.flicker(grid, 0.35, 0.05, false);
+                    else FlxTween.tween(grid, {alpha: 0}, 0.65, {ease: FlxEase.quartOut});
+                });
+                FlxTween.tween(heroeGradient, {alpha: 0}, 0.65, {ease: FlxEase.quartOut, onComplete: function(twn:FlxTween)
+                {
+                    trace('Opening substate!');
+
+                    openSubState(new GameInfoState(data, gameInfoCam));
+                }});
+            }
+
+            grid.onHoverCallback = function(data)
+            {
+                timer = 0;
+                heroe.alreadyRegen = false;
+                if(!hasExited) FlxG.sound.play(Paths.sound('changeSfx'));
+            }
+
+            grid.hoverCallback = function(data)
+            {
+                // trace(data);
+                timer += FlxG.elapsed;
+                if(timer > heroe.regenTime && !heroe.alreadyRegen)
+                {
+                    var heroeParams:HeroeParams = {
+                        imagePath: Paths.image('games/heroes/${data.heroe_image}'),
+                        bitmapDataLoad: false,
+                        apiPath: Paths.gamebananaAPIimage('games/heroes/${GamebananaAPI.getModIdFromUrl(data.url)}_heroe')
+                    }
+                    heroe.regenImage(heroeParams);
+                }
+            }
+
+            gridsGrp.add(grid);
+
+            numX++;
+        }
+        
+        boardBackground.makeGraphic(1572, Std.int(480 * totalGameRows) + 110, 0xFF000000);
+        boardBackground.screenCenter(X);
+        boardBackground.alpha = 0.45;
+        boardBackground.alpha = 0;
+        boardBackground.y = board.y + board.height;
     }
 }

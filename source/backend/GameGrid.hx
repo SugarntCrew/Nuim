@@ -19,6 +19,7 @@ typedef GameData =
 class GameGrid
 {
     public static var games(default, default):Array<GameData> = [
+        /*
         {
             name: "Hola caracola",
             game_location: ""
@@ -102,5 +103,6 @@ class GameGrid
             heroe_image: 'teto',
             url: 'https://gamebanana.com/mods/436927',
         }
+        */
     ];
 }

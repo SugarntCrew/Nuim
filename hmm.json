@@ -27,6 +27,13 @@
             "name": "flixel-addons",
             "type": "haxelib",
             "version": "4.0.1"
+        },
+        {
+          "name": "flixel-text-input",
+          "type": "git",
+          "dir": null,
+          "ref": "main",
+          "url": "https://github.com/MrMadera/flixel-text-input.git"
         }
     ]
 }

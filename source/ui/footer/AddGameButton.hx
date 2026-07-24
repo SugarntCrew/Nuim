@@ -34,7 +34,7 @@ class AddGameButton extends FlxSpriteGroup implements IClickable
     {
         super.update(elapsed);
 
-        if(FlxG.mouse.overlaps(addGameBG))
+        if(FlxG.mouse.overlaps(addGameBG, refCamera))
         {
             _onUnhover = true;
             if(_onHover) 
