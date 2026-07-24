@@ -1,6 +1,6 @@
 # NUIM
 
-Front-end destinated to launch games of all type.
+Gamebanana mods launcher
 
 > [!NOTE]
 > This does not include any game. It's just an application to launch.
