@@ -152,7 +152,7 @@ class GameInfoState extends Substate
         }
         playButton.onClickCallback = function(data, ?customBehavior)
         {
-            if(data.url != null && !isBuildInstalled())
+            if((data.url != null || data.url != '') && !isBuildInstalled())
             {
                 gbDownloadBoard.active = true;
                 gbDownloadBoard.show(0.9, function()
@@ -208,7 +208,7 @@ class GameInfoState extends Substate
             }
         }
         playButton.alpha = 0;
-        if(data.url != null && !isBuildInstalled()) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
+        if((data.url != null || data.url != '') && !isBuildInstalled()) playButton.playButton.loadGraphic(Paths.image('ui/gameinfo/downloadGame'));
         add(playButton);
 
         gbDownloadBg = new FlxSprite(playButton.x + playButton.width + 10, playButton.y + 4.5);

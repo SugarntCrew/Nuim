@@ -23,10 +23,14 @@ class Main extends Sprite
 
         var game = new FlxGame(game.width, game.height, game.initialState, game.fps, game.fps, game.skipSplash);
 		addChild(game);
+
+        FlxG.save.bind('games_data');
         
         FlxG.autoPause = false;
 
 		notificationPopup = new NotificationPopup();
 		addChild(notificationPopup);
+
+        GameGrid.init();
 	}
 }

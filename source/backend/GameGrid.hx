@@ -105,4 +105,10 @@ class GameGrid
         }
         */
     ];
+
+    public static function init()
+    {
+        if(FlxG.save.data.gamesData == null) FlxG.save.data.gamesData = games;
+        else games = FlxG.save.data.gamesData;
+    }
 }
